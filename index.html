@@ -5,17 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valentine</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@600&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+<!-- FONTS -->
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@600&family=Libre+Baskerville:wght@700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
 html,body{
-  margin:0;height:100%;overflow:hidden;
+  margin:0;
+  height:100%;
+  overflow:hidden;
   font-family:'Poppins',sans-serif;
 }
 
 /* BACKGROUND */
 #gradientBg{
-  position:fixed;inset:0;
+  position:fixed;
+  inset:0;
   background:linear-gradient(-45deg,#fde2ea,#fff1f5,#fce7f3);
   background-size:400% 400%;
   animation:gradient 14s ease infinite;
@@ -27,7 +31,7 @@ html,body{
   100%{background-position:0% 50%}
 }
 
-/* PHOTO */
+/* PHOTO (UNCHANGED LOGIC) */
 #photoBg{
   position:fixed;
   inset:0;
@@ -48,19 +52,27 @@ html,body{
 
 /* HEARTS */
 .heart{
-  position:absolute;top:-40px;
-  font-size:26px;opacity:.35;
+  position:absolute;
+  top:-40px;
+  font-size:26px;
+  opacity:.35;
   animation:fall linear infinite;
   z-index:5;
 }
-@keyframes fall{to{transform:translateY(120vh)}}
+@keyframes fall{
+  to{transform:translateY(120vh)}
+}
 
 /* SCREENS */
 #sender,#receiver,#musicGate{
-  position:absolute;inset:0;z-index:10;
+  position:absolute;
+  inset:0;
+  z-index:10;
 }
 #sender,#receiver{
-  display:none;align-items:center;justify-content:center;
+  display:none;
+  align-items:center;
+  justify-content:center;
 }
 #sender{display:flex}
 
@@ -69,8 +81,9 @@ html,body{
   background:rgba(255,255,255,.92);
   backdrop-filter:blur(18px);
   border-radius:28px;
-  padding:34px;
-  width:380px;
+  padding:32px;
+  width:90%;
+  max-width:380px;
   box-shadow:0 40px 80px rgba(255,105,135,.3);
 }
 .form h1{
@@ -78,40 +91,67 @@ html,body{
   color:#c9184a;
   text-align:center;
 }
-.form p{text-align:center;color:#a05a6c;font-size:14px}
-
+.form p{
+  text-align:center;
+  color:#a05a6c;
+  font-size:14px;
+}
 input,select,textarea,button{
-  width:100%;margin-top:14px;padding:12px;
-  border-radius:14px;border:1px solid #ddd;
+  width:100%;
+  margin-top:14px;
+  padding:12px;
+  border-radius:14px;
+  border:1px solid #ddd;
   font-family:'Poppins',sans-serif;
 }
 
-/* RECEIVER TEXT */
-#receiverContent{text-align:center;max-width:720px}
-.title,.valentine,.name,.message,.signature{opacity:0}
+/* RECEIVER */
+#receiverContent{
+  text-align:center;
+  max-width:720px;
+  padding:20px;
+}
+.title,.valentine,.name,.message,.signature{
+  opacity:0;
+}
 
+/* HAPPY */
 .title{
+  font-family:'Libre Baskerville',serif;
+  font-size:26px;
   letter-spacing:2px;
   color:#d6336c;
 }
+
+/* DON'T CHANGE */
 .valentine{
   font-family:'Great Vibes',cursive;
   font-size:64px;
   color:#c9184a;
 }
 
-/* ✅ NAME – NOT ITALIC */
+/* NAME – PREMIUM, NOT ITALIC */
 .name{
-  font-family:'Poppins',sans-serif;
-  font-size:44px;
-  font-weight:500;
-  font-style:normal;
+  font-family:'Playfair Display',serif;
+  font-size:52px;
   color:#9d0208;
+  font-style:normal;
 }
 
-.message{font-size:18px;margin-top:16px}
-.message div{margin-bottom:6px;color:#7b2d3a}
-.signature{margin-top:28px;font-size:14px;color:#b56576}
+/* MESSAGE */
+.message{
+  font-size:18px;
+  margin-top:16px;
+}
+.message div{
+  margin-bottom:6px;
+  color:#7b2d3a;
+}
+.signature{
+  margin-top:28px;
+  font-size:14px;
+  color:#b56576;
+}
 
 /* FADE */
 .fade{animation:fadeIn 1.2s forwards}
@@ -120,42 +160,56 @@ input,select,textarea,button{
 /* MUSIC GATE */
 #musicGate{
   background:rgba(255,255,255,.88);
-  display:none;align-items:center;justify-content:center;
+  display:none;
+  align-items:center;
+  justify-content:center;
   flex-direction:column;
 }
 
 /* BUTTONS */
 .actionBtn{
   background:linear-gradient(135deg,#c9184a,#e6396f);
-  color:#fff;border:none;
-  padding:14px 18px;border-radius:30px;
-  margin-top:12px;cursor:pointer;
+  color:#fff;
+  border:none;
+  padding:14px 26px;
+  border-radius:30px;
+  margin-top:16px;
+  cursor:pointer;
 }
-#revealHeart{font-size:46px;animation:pulse 1.6s infinite;display:none}
-#revealText{display:none;color:#c9184a}
+
+#revealHeart{
+  font-size:46px;
+  animation:pulse 1.6s infinite;
+  display:none;
+  cursor:pointer;
+}
+#revealText{
+  display:none;
+  color:#c9184a;
+}
 @keyframes pulse{50%{transform:scale(1.15)}}
 
-/* SHARE LINK */
-#shareBox{
+/* SHARE LINK FLOATING */
+#floatingShare{
   position:fixed;
   bottom:20px;
   left:50%;
   transform:translateX(-50%);
-  background:white;
-  padding:14px 16px;
+  background:#fff;
+  padding:14px 18px;
   border-radius:16px;
-  box-shadow:0 10px 30px rgba(0,0,0,.15);
-  display:none;
+  box-shadow:0 20px 40px rgba(0,0,0,.2);
   z-index:9999;
+  display:none;
   width:90%;
   max-width:420px;
   text-align:center;
 }
-#shareBox input{
+#floatingShare input{
   width:100%;
   padding:10px;
   border-radius:10px;
-  border:1px solid #ddd;
+  border:1px solid #ccc;
   font-size:12px;
 }
 </style>
@@ -174,15 +228,15 @@ input,select,textarea,button{
 
     <input id="nameInput" placeholder="Their name">
 
-    <p>Select a personal curated message for your partner</p>
+    <p>Select a personal curated message</p>
 
     <select id="messageSelect" onchange="toggleCustomMessage()">
       <option value="">Choose a message</option>
       <option value="Every day feels a little lighter|||Knowing you’re a part of my life.|||I’m grateful for you, always.">
-        Grateful Always — Every day feels a little lighter knowing you’re a part of my life.
+        Grateful Always — Every day feels a little lighter…
       </option>
       <option value="Some people don’t just enter our lives,|||They slowly become a part of our happiness.|||You’re one of them.">
-        A Part of My Happiness — Some people don’t just enter our lives, they slowly become a part of our happiness.
+        A Part of My Happiness — Some people don’t just enter…
       </option>
       <option value="CUSTOM">✍️ Write my own message</option>
     </select>
@@ -216,18 +270,16 @@ input,select,textarea,button{
 </div>
 
 <!-- SHARE LINK -->
-<div id="shareBox">
-  <p style="margin:0 0 6px;color:#c9184a;font-size:14px">
-    Copy & share this link 💗
-  </p>
-  <input id="shareLink" readonly>
+<div id="floatingShare">
+  <div style="color:#c9184a;margin-bottom:8px">💖 Copy & share this link</div>
+  <input id="finalShareLink" readonly onclick="this.select()">
 </div>
 
 <script>
 let uploadedPhoto="", hearts=false;
 
 function toggleCustomMessage(){
-  customMessage.style.display=messageSelect.value==="CUSTOM"?"block":"none";
+  customMessage.style.display = messageSelect.value==="CUSTOM"?"block":"none";
 }
 
 photoInput.onchange=()=>{
@@ -237,10 +289,11 @@ photoInput.onchange=()=>{
 };
 
 function startHearts(){
-  if(hearts)return;hearts=true;
+  if(hearts)return; hearts=true;
   setInterval(()=>{
     const h=document.createElement("div");
-    h.className="heart";h.textContent="💗";
+    h.className="heart";
+    h.textContent="💗";
     h.style.left=Math.random()*100+"vw";
     h.style.animationDuration=(Math.random()*6+6)+"s";
     document.body.appendChild(h);
@@ -265,17 +318,16 @@ function openPreview(){
 
   t3.textContent=nameInput.value;
   t4.innerHTML="";
+
   (messageSelect.value==="CUSTOM"?customMessage.value:messageSelect.value)
     .split("|||").forEach(l=>{
       const d=document.createElement("div");
-      d.textContent=l;t4.appendChild(d);
+      d.textContent=l;
+      t4.appendChild(d);
     });
 
   spotifyPlayer.src=spotifyInput.value.replace("open.spotify.com","open.spotify.com/embed");
   musicGate.style.display="flex";
-
-  shareLink.value=buildLink();
-  shareBox.style.display="block";
 }
 
 afterPlayBtn.onclick=()=>{
@@ -285,33 +337,45 @@ afterPlayBtn.onclick=()=>{
 
 revealHeart.onclick=()=>{
   musicGate.style.display="none";
+
   if(uploadedPhoto){
     photoBg.style.backgroundImage=`url(${uploadedPhoto})`;
     photoBg.style.display="block";
     photoOverlay.style.display="block";
   }
+
   startHearts();
   [t1,t2,t3,t4,t5].forEach((e,i)=>setTimeout(()=>e.classList.add("fade"),i*1200));
+
+  finalShareLink.value = buildLink();
+  floatingShare.style.display="block";
 };
 
 /* AUTO LOAD RECEIVER */
-(function(){
+(()=>{
   const p=new URLSearchParams(location.search);
   if(!p.has("v"))return;
+
   const d=JSON.parse(decodeURIComponent(escape(atob(p.get("v")))));
+
   sender.style.display="none";
   receiver.style.display="flex";
   musicGate.style.display="flex";
+
   t3.textContent=d.name;
   d.message.split("|||").forEach(l=>{
     const div=document.createElement("div");
-    div.textContent=l;t4.appendChild(div);
+    div.textContent=l;
+    t4.appendChild(div);
   });
+
   if(d.photo){
-    photoBg.style.backgroundImage=`url(${d.photo})`;
+    uploadedPhoto=d.photo;
+    photoBg.style.backgroundImage=`url(${uploadedPhoto})`;
     photoBg.style.display="block";
     photoOverlay.style.display="block";
   }
+
   spotifyPlayer.src=d.spotify?.replace("open.spotify.com","open.spotify.com/embed")||"";
 })();
 </script>
