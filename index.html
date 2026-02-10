@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valentine</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@1,600&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@600&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
 
 <style>
 html,body{
@@ -27,7 +27,7 @@ html,body{
   100%{background-position:0% 50%}
 }
 
-/* PHOTO — UNTOUCHED */
+/* PHOTO */
 #photoBg{
   position:fixed;
   inset:0;
@@ -69,8 +69,8 @@ html,body{
   background:rgba(255,255,255,.92);
   backdrop-filter:blur(18px);
   border-radius:28px;
-  padding:32px;
-  width:min(380px,92vw);
+  padding:34px;
+  width:380px;
   box-shadow:0 40px 80px rgba(255,105,135,.3);
 }
 .form h1{
@@ -86,35 +86,26 @@ input,select,textarea,button{
   font-family:'Poppins',sans-serif;
 }
 
-/* RECEIVER (MOBILE-FIRST VERTICAL) */
-#receiverContent{
-  text-align:center;
-  max-width:720px;
-  padding:0 18px;
-}
-
-/* TEXT */
+/* RECEIVER TEXT */
+#receiverContent{text-align:center;max-width:720px}
 .title,.valentine,.name,.message,.signature{opacity:0}
 
-/* UPDATED "HAPPY" FONT */
 .title{
-  font-family:'Playfair Display',serif;
-  font-style:italic;
-  font-size:22px;
-  letter-spacing:3px;
+  letter-spacing:2px;
   color:#d6336c;
 }
-
-/* DO NOT CHANGE */
 .valentine{
   font-family:'Great Vibes',cursive;
   font-size:64px;
   color:#c9184a;
 }
 
+/* ✅ NAME – NOT ITALIC */
 .name{
-  font-family:'Playfair Display',serif;
-  font-size:48px;
+  font-family:'Poppins',sans-serif;
+  font-size:44px;
+  font-weight:500;
+  font-style:normal;
   color:#9d0208;
 }
 
@@ -133,24 +124,39 @@ input,select,textarea,button{
   flex-direction:column;
 }
 
-/* BUTTON */
+/* BUTTONS */
 .actionBtn{
   background:linear-gradient(135deg,#c9184a,#e6396f);
   color:#fff;border:none;
-  padding:14px 22px;
-  border-radius:30px;
+  padding:14px 18px;border-radius:30px;
   margin-top:12px;cursor:pointer;
 }
-
-/* HEART REVEAL */
 #revealHeart{font-size:46px;animation:pulse 1.6s infinite;display:none}
 #revealText{display:none;color:#c9184a}
 @keyframes pulse{50%{transform:scale(1.15)}}
 
-/* MOBILE TWEAK */
-@media(max-width:480px){
-  .valentine{font-size:52px}
-  .name{font-size:40px}
+/* SHARE LINK */
+#shareBox{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:white;
+  padding:14px 16px;
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.15);
+  display:none;
+  z-index:9999;
+  width:90%;
+  max-width:420px;
+  text-align:center;
+}
+#shareBox input{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid #ddd;
+  font-size:12px;
 }
 </style>
 </head>
@@ -209,6 +215,14 @@ input,select,textarea,button{
   <div id="revealText">Tap the heart to reveal</div>
 </div>
 
+<!-- SHARE LINK -->
+<div id="shareBox">
+  <p style="margin:0 0 6px;color:#c9184a;font-size:14px">
+    Copy & share this link 💗
+  </p>
+  <input id="shareLink" readonly>
+</div>
+
 <script>
 let uploadedPhoto="", hearts=false;
 
@@ -234,6 +248,17 @@ function startHearts(){
   },450);
 }
 
+function buildLink(){
+  const payload={
+    name:nameInput.value,
+    message:messageSelect.value==="CUSTOM"?customMessage.value:messageSelect.value,
+    spotify:spotifyInput.value,
+    photo:uploadedPhoto
+  };
+  return location.origin+location.pathname+
+    "?v="+btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+}
+
 function openPreview(){
   sender.style.display="none";
   receiver.style.display="flex";
@@ -248,6 +273,9 @@ function openPreview(){
 
   spotifyPlayer.src=spotifyInput.value.replace("open.spotify.com","open.spotify.com/embed");
   musicGate.style.display="flex";
+
+  shareLink.value=buildLink();
+  shareBox.style.display="block";
 }
 
 afterPlayBtn.onclick=()=>{
@@ -265,6 +293,27 @@ revealHeart.onclick=()=>{
   startHearts();
   [t1,t2,t3,t4,t5].forEach((e,i)=>setTimeout(()=>e.classList.add("fade"),i*1200));
 };
+
+/* AUTO LOAD RECEIVER */
+(function(){
+  const p=new URLSearchParams(location.search);
+  if(!p.has("v"))return;
+  const d=JSON.parse(decodeURIComponent(escape(atob(p.get("v")))));
+  sender.style.display="none";
+  receiver.style.display="flex";
+  musicGate.style.display="flex";
+  t3.textContent=d.name;
+  d.message.split("|||").forEach(l=>{
+    const div=document.createElement("div");
+    div.textContent=l;t4.appendChild(div);
+  });
+  if(d.photo){
+    photoBg.style.backgroundImage=`url(${d.photo})`;
+    photoBg.style.display="block";
+    photoOverlay.style.display="block";
+  }
+  spotifyPlayer.src=d.spotify?.replace("open.spotify.com","open.spotify.com/embed")||"";
+})();
 </script>
 
 </body>
