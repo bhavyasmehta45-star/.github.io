@@ -2,271 +2,477 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Valentine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Valentine Proposal</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@600;700&family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
-html,body{
-  margin:0;height:100%;overflow:hidden;
-  font-family:'Poppins',sans-serif;
+/* --- 1. GLOBAL RESET --- */
+html, body {
+  margin: 0; padding: 0;
+  height: 100%; width: 100%;
+  overflow: hidden;
+  font-family: 'Poppins', sans-serif;
+  background: #000;
+  -webkit-tap-highlight-color: transparent;
 }
 
-#gradientBg{
-  position:fixed;inset:0;
-  background:linear-gradient(-45deg,#fde2ea,#fff1f5,#fce7f3);
-  background-size:400% 400%;
-  animation:gradient 14s ease infinite;
+/* --- 2. BACKGROUNDS --- */
+#gradientBg {
+  position: fixed; inset: 0;
+  background: linear-gradient(-45deg, #ffc3a0, #ffafbd, #ffc3a0, #ff9a9e);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  z-index: 0;
 }
-@keyframes gradient{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
-
-#photoBg{
-  position:fixed;inset:0;
-  background-size:contain;
-  background-repeat:no-repeat;
-  background-position:center;
-  opacity:.6;
-  display:none;
-}
-#photoOverlay{
-  position:fixed;inset:0;
-  background:rgba(255,240,246,.45);
-  display:none;
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.heart{
-  position:absolute;top:-40px;
-  font-size:26px;opacity:.35;
-  animation:fall linear infinite;
-}
-@keyframes fall{to{transform:translateY(120vh)}}
-
-#sender,#receiver,#musicGate{
-  position:absolute;inset:0;
-  display:flex;align-items:center;justify-content:center;
-}
-#receiver,#musicGate{display:none}
-
-.form{
-  background:rgba(255,255,255,.92);
-  backdrop-filter:blur(18px);
-  border-radius:28px;
-  padding:34px;
-  width:380px;
-  box-shadow:0 40px 80px rgba(255,105,135,.3);
+#photoBg {
+  position: fixed; inset: 0;
+  background-size: contain; 
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0; transition: opacity 1s ease;
+  z-index: 1;
 }
 
-.form h1{
-  font-family:'Playfair Display',serif;
-  color:#c9184a;
-  text-align:center;
+#photoOverlay {
+  position: fixed; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 10%, rgba(255,255,255,0.1) 60%);
+  display: none;
+  z-index: 2;
 }
 
-input,select,textarea,button{
-  width:100%;margin-top:14px;padding:12px;
-  border-radius:14px;border:1px solid #ddd;
+/* --- 3. UI LAYOUTS --- */
+#sender, #receiver, #musicGate {
+  position: absolute; inset: 0; z-index: 10;
+  width: 100%; height: 100%;
 }
 
-.actionBtn{
-  background:linear-gradient(135deg,#c9184a,#e6396f);
-  color:#fff;border:none;
-  padding:14px;border-radius:30px;
-  margin-top:14px;cursor:pointer;
+/* Flex Center */
+#sender, #musicGate {
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(5px);
 }
 
-#receiverContent{text-align:center;max-width:720px}
-.fadeItem{opacity:0}
-.fadeIn{animation:fade 1.3s forwards}
-@keyframes fade{to{opacity:1}}
-
-.happy{
-  font-family:'Playfair Display',serif;
-  font-size:32px;
-  color:#d6336c;
-}
-.valentine{
-  font-family:'Great Vibes',cursive;
-  font-size:64px;
-  color:#c9184a;
-}
-.name{
-  font-family:'Playfair Display',serif;
-  font-size:52px;
-  color:#9d0208;
-}
-.message{font-size:18px;color:#7b2d3a;margin-top:12px}
-.signature{margin-top:28px;font-size:14px;color:#b56576}
-
-#musicGate{
-  background:rgba(255,255,255,.88);
-  flex-direction:column;
+/* --- 4. SENDER DASHBOARD --- */
+.form-box {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 25px;
+  /* Extra padding at bottom so content isn't hidden behind floating button */
+  padding-bottom: 100px; 
+  border-radius: 25px;
+  width: 85%; max-width: 380px; 
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  text-align: center;
+  max-height: 100vh; overflow-y: auto; 
+  -webkit-overflow-scrolling: touch;
 }
 
-#revealHeart{
-  font-size:46px;
-  animation:pulse 1.6s infinite;
-  cursor:pointer;
+.form-box h1 {
+  font-family: 'Playfair Display', serif;
+  color: #c9184a; margin-bottom: 15px;
+  font-size: 20px; line-height: 1.3;
 }
-@keyframes pulse{50%{transform:scale(1.15)}}
 
-#shareBox{
-  margin-top:16px;
+input, select, textarea {
+  width: 100%; box-sizing: border-box;
+  padding: 12px; margin-top: 8px;
+  border: 1px solid #e0e0e0; border-radius: 12px;
+  font-family: 'Poppins', sans-serif; font-size: 14px;
+  background: #fff; outline: none;
+  font-size: 16px; /* Prevents iOS zoom */
 }
-#shareBox input{
-  width:100%;
-  padding:10px;
-  font-size:12px;
+
+.input-label {
+  display: block; text-align: left;
+  margin-top: 12px; margin-bottom: -5px;
+  font-size: 12px; color: #c9184a; font-weight: 600;
+  padding-left: 4px;
+}
+
+.small-note {
+  font-size: 10px; color: #888; text-align: left; margin-top: 2px; padding-left: 4px;
+}
+
+#customMessageInput { display: none; height: 80px; resize: none; }
+
+/* --- FLOATING BUTTON FIX --- */
+.floating-btn-container {
+  position: fixed;
+  bottom: 30px;
+  left: 0; 
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 9999; /* Always on top */
+  pointer-events: none; /* Let clicks pass through container */
+}
+
+.btn {
+  width: 85%; max-width: 350px;
+  padding: 16px;
+  border: none; border-radius: 50px;
+  background: linear-gradient(135deg, #ff758c, #ff7eb3);
+  color: white; font-weight: 600; font-size: 18px;
+  cursor: pointer;
+  box-shadow: 0 10px 25px rgba(255, 77, 109, 0.5);
+  pointer-events: auto; /* Re-enable clicks for button */
+  /* Remove touch delay */
+  touch-action: manipulation;
+}
+.btn:active { transform: scale(0.95); }
+
+/* --- 5. MUSIC GATE --- */
+#musicGate {
+  display: none; flex-direction: column;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.music-card {
+  background: rgba(255,255,255,0.95);
+  padding: 15px; border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  margin-bottom: 25px;
+  position: relative; z-index: 30;
+}
+
+.instruction-line {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 10px 25px; border-radius: 50px;
+  color: #c9184a; font-weight: 600; font-size: 14px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 15px rgba(201, 24, 74, 0.15);
+  position: relative; z-index: 30;
+}
+
+#revealHeart {
+  font-size: 65px; cursor: pointer;
+  animation: pulseHeart 1.5s infinite;
+  position: relative; z-index: 100;
+}
+@keyframes pulseHeart { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+
+/* Controls */
+.controls {
+  margin-top: 30px; display: flex; gap: 10px;
+  position: relative; z-index: 100;
+}
+.control-btn {
+  padding: 10px 20px; border-radius: 30px; border: none;
+  font-size: 12px; cursor: pointer; font-weight: 600;
+}
+.back-btn { background: #fff; color: #555; }
+.share-btn { background: #c9184a; color: #fff; }
+
+/* --- 6. RECEIVER SCREEN --- */
+#receiver {
+  display: none;
+  flex-direction: column;
+  justify-content: flex-end; 
+  align-items: center;
+  text-align: center;
+  padding-bottom: 8vh;
+}
+
+#receiverContent {
+  width: 90%; 
+  max-width: 550px; 
+  z-index: 10;
+  text-shadow: 0 2px 10px rgba(0,0,0,0.3); 
+}
+
+.fadeItem { opacity: 0; transform: translateY(20px); transition: all 1s ease; }
+.visible { opacity: 1; transform: translateY(0); }
+
+.r-happy {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.8rem; color: #fff; letter-spacing: 2px;
+}
+.r-valentine {
+  font-family: 'Great Vibes', cursive;
+  font-size: 4.5rem; color: #ffebf0;
+  margin: -5px 0 5px 0; line-height: 1.1;
+}
+.r-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem; color: #fff;
+  font-weight: 700; text-transform: uppercase; margin-bottom: 15px;
+}
+.r-message {
+  font-size: 1rem; color: #fff; line-height: 1.5; font-weight: 400;
+  background: rgba(0,0,0,0.25);
+  padding: 15px; border-radius: 15px;
+  backdrop-filter: blur(4px); margin-bottom: 15px;
+}
+.r-signature {
+  font-size: 0.8rem; color: rgba(255,255,255,0.8); font-style: italic;
+}
+
+/* --- 7. FALLING HEARTS --- */
+.heart-fall {
+  position: absolute; top: -50px;
+  font-size: 24px; opacity: 0.6;
+  animation: fall linear infinite; z-index: 5; color: #ff4d6d;
+}
+@keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+/* Mobile Adjustments */
+@media (max-height: 700px) {
+  .r-valentine { font-size: 3.5rem; }
+  .r-name { font-size: 2rem; }
+  .music-card iframe { height: 80px; }
 }
 </style>
 </head>
-
 <body>
 
 <div id="gradientBg"></div>
 <div id="photoBg"></div>
 <div id="photoOverlay"></div>
 
-<!-- SENDER -->
 <div id="sender">
-  <div class="form">
-    <h1>Make your Valentine feel Special</h1>
-
-    <input id="nameInput" placeholder="Their name">
-
-    <select id="messageSelect">
-      <option value="">Choose a message</option>
-      <option value="Every day feels a little lighter|||Knowing you’re a part of my life.|||I’m grateful for you, always.">
-        Grateful Always — Every day feels a little lighter knowing you’re a part of my life.
-      </option>
-      <option value="Some people don’t just enter our lives,|||They slowly become a part of our happiness.|||You’re one of them.">
-        A Part of My Happiness — Some people don’t just enter our lives, they slowly become a part of our happiness.
-      </option>
-      <option value="It’s not about the big moments,|||It’s how you make the small ones feel.|||That’s what I love about you.">
-        The Little Things — It’s not about the big moments, it’s how you make the small ones feel.
-      </option>
+  <div class="form-box">
+    <h1>Create a beautiful memory for your Valentine</h1>
+    
+    <input id="nameInput" placeholder="Write your beloved partner's name">
+    
+    <select id="messageSelect" onchange="checkCustom()">
+      <option value="">Choose a special curated message or write custom message</option>
+      <option value="Loving You|||Is the easiest thing I've ever done.|||You are my greatest adventure.">Loving You — My greatest adventure.</option>
+      <option value="My Safe Place|||In a chaotic world,|||You are my peace and my home.">My Safe Place — You are my peace.</option>
+      <option value="Better Together|||Life is just better with you.|||Thank you for being my partner in crime.">Better Together — Partner in crime.</option>
+      <option value="Forever Kind of Love|||I choose you today,|||And I'll choose you over and over again.">Forever Love — I choose you.</option>
+      <option value="Every day feels lighter|||Knowing you’re a part of my life.|||I’m grateful for you, always.">Grateful — Every day feels lighter.</option>
+      <option value="custom">✨ Write my own message...</option>
     </select>
+    <textarea id="customMessageInput" placeholder="Type your heartfelt message here... (Use '|||' to create new lines)"></textarea>
 
+    <div class="input-label">Option A: Upload Photo (For your Reel/Preview)</div>
     <input type="file" id="photoInput" accept="image/*">
-    <input id="spotifyInput" placeholder="Spotify link">
+    
+    <div class="input-label">Option B: Paste Image Link (For Sharing)</div>
+    <div class="small-note">Paste a link to an image (URL) if you want to send this to a partner.</div>
+    <input id="photoUrlInput" placeholder="https://example.com/photo.jpg">
 
-    <button class="actionBtn" onclick="openPreview()">Preview</button>
+    <div class="input-label">Spotify Song</div>
+    <input id="spotifyInput" placeholder="Spotify Song Link (Optional)">
+  </div>
 
-    <div id="shareBox" style="display:none">
-      <p>Copy & share this link 💗</p>
-      <input id="shareLink" readonly onclick="this.select()">
-    </div>
+  <div class="floating-btn-container">
+    <button type="button" class="btn" onclick="startPreviewMode()">Preview & Create</button>
   </div>
 </div>
 
-<!-- RECEIVER -->
+<div id="musicGate">
+  <div class="music-card">
+    <iframe id="spotifyPlayer" style="border-radius:12px" width="300" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+  </div>
+  
+  <div class="instruction-line">Tap heart below after playing Music</div>
+  <div id="revealHeart">💖</div>
+
+  <div id="senderControls" class="controls" style="display:none;">
+    <button class="control-btn back-btn" onclick="goBackToEdit()">Back to Edit</button>
+    <button class="control-btn share-btn" onclick="copyLink()">🔗 Copy Link for Partner</button>
+  </div>
+</div>
+
 <div id="receiver">
   <div id="receiverContent">
-    <div class="fadeItem happy" id="t1">Happy</div>
-    <div class="fadeItem valentine" id="t2">Valentine’s Day</div>
-    <div class="fadeItem name" id="t3"></div>
-    <div class="fadeItem message" id="t4"></div>
-    <div class="fadeItem signature" id="t5">
-      From someone smiling while you read this.
-    </div>
+    <div class="fadeItem r-happy">Happy</div>
+    <div class="fadeItem r-valentine">Valentine’s Day</div>
+    <div class="fadeItem r-name" id="rName"></div>
+    <div class="fadeItem r-message" id="rMessage"></div>
+    <div class="fadeItem r-signature">From someone smiling while you read this.</div>
   </div>
-</div>
-
-<!-- MUSIC -->
-<div id="musicGate">
-  <iframe id="spotifyPlayer" width="360" height="152"></iframe>
-  <p>Tap after playing music ❤️</p>
-  <div id="revealHeart">💗</div>
 </div>
 
 <script>
-let uploadedPhoto="", hearts=false;
+/* --- DATA & DEFAULTS --- */
+let uploadedPhotoData = ""; 
+const defaultSpotify = "https://open.spotify.com/"; 
 
-photoInput.onchange=()=>{
-  const r=new FileReader();
-  r.onload=e=>uploadedPhoto=e.target.result;
-  r.readAsDataURL(photoInput.files[0]);
-};
-
-// ✅ SAFE BASE64 ENCODING
-function encodeData(obj){
-  return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
-}
-function decodeData(str){
-  return JSON.parse(decodeURIComponent(escape(atob(str))));
-}
-
-function buildLink(data){
-  return location.origin + location.pathname + "?v=" + encodeData(data);
-}
-
-function openPreview(){
-  const payload={
-    n:nameInput.value,
-    m:messageSelect.value,
-    p:uploadedPhoto,
-    s:spotifyInput.value
-  };
-
-  shareLink.value = buildLink(payload);
-  shareBox.style.display="block";
-  loadReceiver(payload);
-}
-
-function loadReceiver(d){
-  sender.style.display="none";
-  receiver.style.display="flex";
-  musicGate.style.display="flex";
-
-  t3.textContent=d.n;
-  t4.innerHTML="";
-  d.m.split("|||").forEach(l=>{
-    const div=document.createElement("div");
-    div.textContent=l;
-    t4.appendChild(div);
-  });
-
-  spotifyPlayer.src=d.s.replace("open.spotify.com","open.spotify.com/embed");
-  uploadedPhoto=d.p;
-}
-
-revealHeart.onclick=()=>{
-  musicGate.style.display="none";
-
-  if(uploadedPhoto){
-    photoBg.style.backgroundImage=`url(${uploadedPhoto})`;
-    photoBg.style.display="block";
-    photoOverlay.style.display="block";
+/* --- INITIALIZATION --- */
+window.addEventListener('DOMContentLoaded', (event) => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('n')) {
+    startReceiverMode(params);
   }
 
-  if(!hearts){
-    hearts=true;
-    setInterval(()=>{
-      const h=document.createElement("div");
-      h.className="heart";h.textContent="💗";
-      h.style.left=Math.random()*100+"vw";
-      h.style.animationDuration=(Math.random()*6+6)+"s";
-      document.body.appendChild(h);
-      setTimeout(()=>h.remove(),12000);
-    },450);
+  // Setup File Input
+  const photoInput = document.getElementById('photoInput');
+  if(photoInput) {
+    photoInput.addEventListener('change', function(e) {
+      if (e.target.files && e.target.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          uploadedPhotoData = event.target.result;
+          document.getElementById('photoUrlInput').value = ""; 
+        };
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    });
+  }
+});
+
+/* --- SENDER FUNCTIONS --- */
+function checkCustom() {
+  const select = document.getElementById('messageSelect');
+  const customBox = document.getElementById('customMessageInput');
+  customBox.style.display = (select.value === 'custom') ? 'block' : 'none';
+}
+
+function startPreviewMode() {
+  try {
+    const name = document.getElementById('nameInput').value;
+    if(!name) { 
+      alert("Please enter your partner's name first!"); 
+      return; 
+    }
+
+    setupReceiverView(
+      name, 
+      document.getElementById('messageSelect').value, 
+      document.getElementById('customMessageInput').value
+    );
+    
+    const spotifyLink = document.getElementById('spotifyInput').value;
+    document.getElementById('spotifyPlayer').src = getSpotifyEmbedUrl(spotifyLink);
+
+    const urlPhoto = document.getElementById('photoUrlInput').value;
+    let bgImage = "";
+    if(uploadedPhotoData) bgImage = `url(${uploadedPhotoData})`;
+    else if(urlPhoto) bgImage = `url(${urlPhoto})`;
+
+    if(bgImage) {
+      const bg = document.getElementById('photoBg');
+      bg.style.backgroundImage = bgImage;
+      bg.style.opacity = '1';
+      bg.style.filter = "blur(8px)";
+    }
+
+    document.getElementById('sender').style.display = 'none';
+    document.getElementById('musicGate').style.display = 'flex';
+    document.getElementById('senderControls').style.display = 'flex'; 
+    
+  } catch (err) {
+    alert("Error: " + err.message);
+  }
+}
+
+function goBackToEdit() {
+  document.getElementById('sender').style.display = 'flex';
+  document.getElementById('musicGate').style.display = 'none';
+  document.getElementById('photoBg').style.opacity = '0';
+}
+
+function copyLink() {
+  const name = encodeURIComponent(document.getElementById('nameInput').value);
+  const msgSelect = encodeURIComponent(document.getElementById('messageSelect').value);
+  const msgCustom = encodeURIComponent(document.getElementById('customMessageInput').value);
+  const song = encodeURIComponent(document.getElementById('spotifyInput').value);
+  const photoUrl = encodeURIComponent(document.getElementById('photoUrlInput').value);
+
+  if(uploadedPhotoData && !document.getElementById('photoUrlInput').value) {
+    alert("Note: Uploaded photos work for your preview, but to share a link, please use the 'Paste Image Link' box.");
+    return;
   }
 
-  [t1,t2,t3,t4,t5].forEach((el,i)=>{
-    setTimeout(()=>el.classList.add("fadeIn"),i*1200);
+  const baseUrl = window.location.href.split('?')[0];
+  const finalLink = `${baseUrl}?n=${name}&m=${msgSelect}&c=${msgCustom}&s=${song}&p=${photoUrl}`;
+  
+  navigator.clipboard.writeText(finalLink).then(() => {
+    alert("Link Copied! Send this to your Valentine ❤️");
+  }).catch(err => {
+    prompt("Copy this link:", finalLink);
   });
-};
+}
 
-// AUTO LOAD RECEIVER FROM LINK
-(function(){
-  const p=new URLSearchParams(location.search);
-  if(!p.has("v"))return;
-  const d=decodeData(p.get("v"));
-  loadReceiver(d);
-})();
+/* --- RECEIVER FUNCTIONS --- */
+function startReceiverMode(params) {
+  document.getElementById('sender').style.display = 'none';
+  
+  const name = params.get('n');
+  const msgSelect = params.get('m');
+  const msgCustom = params.get('c');
+  const song = params.get('s');
+  const photo = params.get('p');
+
+  setupReceiverView(name, msgSelect, msgCustom);
+  document.getElementById('spotifyPlayer').src = getSpotifyEmbedUrl(song);
+
+  if (photo && photo !== "undefined" && photo !== "") {
+    const bg = document.getElementById('photoBg');
+    bg.style.backgroundImage = `url(${photo})`;
+    bg.style.opacity = '1';
+    bg.style.filter = "blur(8px)";
+  }
+
+  document.getElementById('musicGate').style.display = 'flex';
+  document.getElementById('senderControls').style.display = 'none';
+}
+
+/* --- SHARED UTILS --- */
+function setupReceiverView(name, msgSelect, msgCustom) {
+  document.getElementById('rName').textContent = name;
+  const finalMessage = (msgSelect === 'custom' ? msgCustom : msgSelect);
+  const msgContainer = document.getElementById('rMessage');
+  msgContainer.innerHTML = "";
+  if(finalMessage) {
+    finalMessage.split('|||').forEach(line => {
+      const p = document.createElement('div');
+      p.textContent = line;
+      p.style.margin = "5px 0";
+      msgContainer.appendChild(p);
+    });
+  }
+}
+
+function getSpotifyEmbedUrl(inputUrl) {
+  if (!inputUrl || inputUrl === "undefined") return defaultSpotify;
+  try {
+    if (inputUrl.includes('/track/')) {
+      let trackId = inputUrl.split('/track/')[1];
+      if (trackId.includes('?')) trackId = trackId.split('?')[0];
+      return `https://open.spotify.com/embed/track/${trackId}`;
+    } else if (inputUrl.includes('embed')) {
+      return inputUrl;
+    }
+  } catch (e) { return defaultSpotify; }
+  return defaultSpotify;
+}
+
+document.getElementById('revealHeart').addEventListener('click', function() {
+  document.getElementById('musicGate').style.display = 'none';
+  document.getElementById('receiver').style.display = 'flex';
+  document.getElementById('photoOverlay').style.display = 'block';
+  document.getElementById('photoBg').style.filter = "blur(0px)";
+  createHearts();
+  
+  const items = document.querySelectorAll('.fadeItem');
+  items.forEach((item, index) => {
+    setTimeout(() => { item.classList.add('visible'); }, index * 800);
+  });
+});
+
+function createHearts() {
+  setInterval(() => {
+    const heart = document.createElement('div');
+    heart.className = 'heart-fall';
+    heart.textContent = '💗';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 7000);
+  }, 300);
+}
 </script>
 
 </body>
