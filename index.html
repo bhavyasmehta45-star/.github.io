@@ -64,8 +64,7 @@ html, body {
 .form-box {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  padding: 25px;
-  padding-bottom: 90px; 
+  padding: 30px 25px; /* Slightly more vertical padding */
   border-radius: 25px;
   width: 85%; max-width: 380px; 
   box-shadow: 0 20px 50px rgba(0,0,0,0.2);
@@ -77,29 +76,21 @@ html, body {
 
 .form-box h1 {
   font-family: 'Playfair Display', serif;
-  color: #c9184a; margin-bottom: 15px;
-  font-size: 20px; line-height: 1.3;
+  color: #c9184a; margin-bottom: 25px;
+  font-size: 22px; line-height: 1.3;
 }
 
 input, select, textarea {
   width: 100%; box-sizing: border-box;
-  padding: 12px; margin-top: 8px;
+  padding: 15px; 
+  margin-top: 15px; /* Increased margin for better separation between boxes */
   border: 1px solid #e0e0e0; border-radius: 12px;
   font-family: 'Poppins', sans-serif; font-size: 14px;
   background: #fff; outline: none;
-  font-size: 16px;
+  font-size: 15px;
+  color: #333;
 }
-
-.input-label {
-  display: block; text-align: left;
-  margin-top: 15px; margin-bottom: -5px;
-  font-size: 12px; color: #c9184a; font-weight: 600;
-  padding-left: 4px;
-}
-
-.small-note {
-  font-size: 10px; color: #888; text-align: left; margin-top: 2px; padding-left: 4px;
-}
+input::placeholder { color: #888; }
 
 #customMessageInput { display: none; height: 80px; resize: none; }
 
@@ -154,7 +145,6 @@ input, select, textarea {
 #receiver {
   display: none;
   flex-direction: column;
-  /* Flex-end pushes content to bottom */
   justify-content: flex-end; 
   align-items: center;
   text-align: center;
@@ -211,10 +201,10 @@ input, select, textarea {
   display: block;
 }
 
-/* --- 7. FINAL CONTROLS (Buttons on Last Page) --- */
+/* --- 7. FINAL CONTROLS --- */
 .final-controls {
   margin-top: 15px; 
-  display: none; /* Hidden by default, shown via JS only for Sender */
+  display: none; 
   gap: 10px;
   justify-content: center;
   width: 100%;
@@ -265,12 +255,9 @@ input, select, textarea {
     </select>
     <textarea id="customMessageInput" placeholder="Type your heartfelt message here... (Use '|||' to create new lines)"></textarea>
 
-    <div class="input-label">Upload Photo Link from Google Drive</div>
-    <div class="small-note">Paste the shareable link of your photo here.</div>
-    <input id="photoUrlInput" placeholder="https://drive.google.com/file/d/...">
+    <input id="photoUrlInput" placeholder="Upload a photo link from Google Drive">
 
-    <div class="input-label">Spotify Song</div>
-    <input id="spotifyInput" placeholder="Spotify Song Link (Optional)">
+    <input id="spotifyInput" placeholder="Spotify Song Link">
   </div>
 
   <div class="floating-btn-container">
@@ -308,16 +295,14 @@ input, select, textarea {
 </div>
 
 <script>
-let isPreview = false; /* Flag to track if user is sender or receiver */
+let isPreview = false; 
 const defaultSpotify = "https://open.spotify.com/"; 
 
 window.addEventListener('DOMContentLoaded', (event) => {
   const params = new URLSearchParams(window.location.search);
   if (params.has('n')) {
-    /* If URL has params, it's the receiver (partner) viewing it */
     startReceiverMode(params);
   } else {
-    /* Otherwise it's the sender */
     isPreview = false;
   }
 });
@@ -336,7 +321,6 @@ function startPreviewMode() {
       return; 
     }
 
-    /* Set flag to true so we show buttons later */
     isPreview = true;
 
     setupReceiverView(
@@ -373,7 +357,6 @@ function goBackToEdit() {
   document.getElementById('photoOverlay').style.display = 'none';
   document.getElementById('photoBg').style.opacity = '0';
   
-  /* Stop heart animation loop if you want, but simple reload is easier or just hiding them */
   const hearts = document.querySelectorAll('.heart-fall');
   hearts.forEach(h => h.remove());
 }
@@ -400,7 +383,7 @@ function copyLink() {
 
 function startReceiverMode(params) {
   document.getElementById('sender').style.display = 'none';
-  isPreview = false; /* Ensure buttons don't show for receiver */
+  isPreview = false; 
   
   const name = params.get('n');
   const msgSelect = params.get('m');
@@ -468,7 +451,6 @@ document.getElementById('revealHeart').addEventListener('click', function() {
   document.getElementById('photoBg').style.filter = "blur(0px)";
   createHearts();
   
-  /* Show buttons ONLY if we are in preview mode (Sender) */
   if (isPreview) {
     document.getElementById('finalControls').style.display = 'flex';
   }
