@@ -34,7 +34,7 @@ html, body {
 
 #photoBg {
   position: fixed; inset: 0;
-  background-size: cover; /* CHANGED: 'cover' fills the mobile screen better */
+  background-size: cover; 
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0; transition: opacity 1s ease;
@@ -43,8 +43,7 @@ html, body {
 
 #photoOverlay {
   position: fixed; inset: 0;
-  /* A subtle gradient to make top text and bottom text readable */
-  background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 20%, rgba(0,0,0,0) 70%, rgba(0,0,0,0.6) 100%);
+  background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 25%, rgba(0,0,0,0) 75%, rgba(0,0,0,0.8) 100%);
   display: none;
   z-index: 2;
 }
@@ -55,7 +54,6 @@ html, body {
   width: 100%; height: 100%;
 }
 
-/* Flex Center for Forms */
 #sender, #musicGate {
   display: flex; align-items: center; justify-content: center;
   backdrop-filter: blur(5px);
@@ -73,7 +71,6 @@ html, body {
   text-align: center;
   max-height: 90vh; overflow-y: auto; 
   -webkit-overflow-scrolling: touch;
-  position: relative; z-index: 20;
 }
 
 .form-box h1 {
@@ -104,7 +101,7 @@ input, select, textarea {
 
 #customMessageInput { display: none; height: 80px; resize: none; }
 
-/* FLOATING BUTTON */
+/* FLOATING BUTTON (Works on Desktop & Mobile) */
 .floating-btn-container {
   position: fixed; bottom: 30px; left: 0; width: 100%;
   display: flex; justify-content: center;
@@ -118,7 +115,7 @@ input, select, textarea {
   color: white; font-weight: 600; font-size: 18px;
   cursor: pointer;
   box-shadow: 0 10px 25px rgba(255, 77, 109, 0.5);
-  pointer-events: auto; touch-action: manipulation;
+  pointer-events: auto; 
 }
 .btn:active { transform: scale(0.95); }
 
@@ -163,62 +160,48 @@ input, select, textarea {
 .back-btn { background: #fff; color: #555; }
 .share-btn { background: #c9184a; color: #fff; }
 
-/* --- 6. RECEIVER SCREEN (MOBILE OPTIMIZED) --- */
+/* --- 6. RECEIVER SCREEN (SPLIT VIEW) --- */
 #receiver {
   display: none;
   flex-direction: column;
-  /* Split content: Top text at top, Message at bottom */
   justify-content: space-between; 
   align-items: center;
   text-align: center;
-  /* Padding for safe areas on mobile */
   padding-top: 60px; 
   padding-bottom: 40px; 
 }
 
-/* Group 1: The Top Title */
-#receiverHeader {
-  z-index: 10;
-  width: 100%;
-}
+#receiverHeader { z-index: 10; width: 100%; }
 
-/* Group 2: The Bottom Message */
 #receiverContent {
-  width: 90%; 
-  max-width: 550px; 
-  z-index: 10;
-  padding-bottom: 20px;
+  width: 90%; max-width: 550px; 
+  z-index: 10; padding-bottom: 20px;
 }
 
 .fadeItem { opacity: 0; transform: translateY(20px); transition: all 1s ease; }
 .visible { opacity: 1; transform: translateY(0); }
 
-/* Top Text Styles */
+/* Text Styles */
 .r-happy {
   font-family: 'Playfair Display', serif;
   font-size: 1.5rem; color: #fff; letter-spacing: 2px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-  margin-bottom: 5px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5); margin-bottom: 5px;
 }
 .r-valentine {
   font-family: 'Great Vibes', cursive;
-  font-size: 4rem; color: #ffebf0;
-  line-height: 1;
+  font-size: 4rem; color: #ffebf0; line-height: 1;
   text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 .r-name {
   font-family: 'Playfair Display', serif;
   font-size: 2.2rem; color: #fff;
-  font-weight: 700; text-transform: uppercase;
-  margin-top: 10px;
+  font-weight: 700; text-transform: uppercase; margin-top: 10px;
   text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 
-/* Bottom Message Box Styles */
 .r-message-box {
-  background: rgba(0, 0, 0, 0.4); /* Dark see-through box */
-  padding: 20px; 
-  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.4); 
+  padding: 20px; border-radius: 20px;
   backdrop-filter: blur(8px); 
   border: 1px solid rgba(255,255,255,0.1);
 }
@@ -228,8 +211,7 @@ input, select, textarea {
   margin-bottom: 10px;
 }
 .r-signature {
-  font-size: 0.8rem; color: rgba(255,255,255,0.8); font-style: italic;
-  margin-top: 5px;
+  font-size: 0.8rem; color: rgba(255,255,255,0.8); font-style: italic; margin-top: 5px;
 }
 
 /* --- 7. FALLING HEARTS --- */
@@ -240,7 +222,6 @@ input, select, textarea {
 }
 @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
 
-/* Mobile Adjustments for small screens */
 @media (max-height: 700px) {
   .r-valentine { font-size: 3.2rem; }
   .r-name { font-size: 1.8rem; }
@@ -318,4 +299,181 @@ input, select, textarea {
 <script>
 /* --- DATA & DEFAULTS --- */
 let uploadedPhotoData = ""; 
-const defaultSpotify = "
+const defaultSpotify = "https://open.spotify.com/"; 
+
+/* --- INITIALIZATION --- */
+window.addEventListener('DOMContentLoaded', (event) => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('n')) {
+    startReceiverMode(params);
+  }
+
+  const photoInput = document.getElementById('photoInput');
+  if(photoInput) {
+    photoInput.addEventListener('change', function(e) {
+      if (e.target.files && e.target.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          uploadedPhotoData = event.target.result;
+          document.getElementById('photoUrlInput').value = ""; 
+        };
+        reader.readAsDataURL(e.target.files[0]);
+      }
+    });
+  }
+});
+
+/* --- FUNCTIONS --- */
+function checkCustom() {
+  const select = document.getElementById('messageSelect');
+  const customBox = document.getElementById('customMessageInput');
+  customBox.style.display = (select.value === 'custom') ? 'block' : 'none';
+}
+
+// Global function callable by onclick
+function startPreviewMode() {
+  try {
+    const name = document.getElementById('nameInput').value;
+    if(!name) { 
+      alert("Please enter your partner's name first!"); 
+      return; 
+    }
+
+    setupReceiverView(
+      name, 
+      document.getElementById('messageSelect').value, 
+      document.getElementById('customMessageInput').value
+    );
+    
+    const spotifyLink = document.getElementById('spotifyInput').value;
+    document.getElementById('spotifyPlayer').src = getSpotifyEmbedUrl(spotifyLink);
+
+    const urlPhoto = document.getElementById('photoUrlInput').value;
+    let bgImage = "";
+    if(uploadedPhotoData) bgImage = `url(${uploadedPhotoData})`;
+    else if(urlPhoto) bgImage = `url(${urlPhoto})`;
+
+    if(bgImage) {
+      const bg = document.getElementById('photoBg');
+      bg.style.backgroundImage = bgImage;
+      bg.style.opacity = '1';
+      bg.style.filter = "blur(8px)";
+    }
+
+    document.getElementById('sender').style.display = 'none';
+    document.getElementById('musicGate').style.display = 'flex';
+    document.getElementById('senderControls').style.display = 'flex'; 
+    
+  } catch (err) {
+    alert("Error: " + err.message);
+  }
+}
+
+function goBackToEdit() {
+  document.getElementById('sender').style.display = 'flex';
+  document.getElementById('musicGate').style.display = 'none';
+  document.getElementById('photoBg').style.opacity = '0';
+}
+
+function copyLink() {
+  const name = encodeURIComponent(document.getElementById('nameInput').value);
+  const msgSelect = encodeURIComponent(document.getElementById('messageSelect').value);
+  const msgCustom = encodeURIComponent(document.getElementById('customMessageInput').value);
+  const song = encodeURIComponent(document.getElementById('spotifyInput').value);
+  const photoUrl = encodeURIComponent(document.getElementById('photoUrlInput').value);
+
+  if(uploadedPhotoData && !document.getElementById('photoUrlInput').value) {
+    alert("Note: Uploaded photos work for your preview, but to share a link, please use the 'Paste Image Link' box.");
+    return;
+  }
+
+  const baseUrl = window.location.href.split('?')[0];
+  const finalLink = `${baseUrl}?n=${name}&m=${msgSelect}&c=${msgCustom}&s=${song}&p=${photoUrl}`;
+  
+  navigator.clipboard.writeText(finalLink).then(() => {
+    alert("Link Copied! Send this to your Valentine ❤️");
+  }).catch(err => {
+    prompt("Copy this link:", finalLink);
+  });
+}
+
+function startReceiverMode(params) {
+  document.getElementById('sender').style.display = 'none';
+  
+  const name = params.get('n');
+  const msgSelect = params.get('m');
+  const msgCustom = params.get('c');
+  const song = params.get('s');
+  const photo = params.get('p');
+
+  setupReceiverView(name, msgSelect, msgCustom);
+  document.getElementById('spotifyPlayer').src = getSpotifyEmbedUrl(song);
+
+  if (photo && photo !== "undefined" && photo !== "") {
+    const bg = document.getElementById('photoBg');
+    bg.style.backgroundImage = `url(${photo})`;
+    bg.style.opacity = '1';
+    bg.style.filter = "blur(8px)";
+  }
+
+  document.getElementById('musicGate').style.display = 'flex';
+  document.getElementById('senderControls').style.display = 'none';
+}
+
+function setupReceiverView(name, msgSelect, msgCustom) {
+  document.getElementById('rName').textContent = name;
+  const finalMessage = (msgSelect === 'custom' ? msgCustom : msgSelect);
+  const msgContainer = document.getElementById('rMessage');
+  msgContainer.innerHTML = "";
+  if(finalMessage) {
+    finalMessage.split('|||').forEach(line => {
+      const p = document.createElement('div');
+      p.textContent = line;
+      p.style.margin = "5px 0";
+      msgContainer.appendChild(p);
+    });
+  }
+}
+
+function getSpotifyEmbedUrl(inputUrl) {
+  if (!inputUrl || inputUrl === "undefined") return defaultSpotify;
+  try {
+    if (inputUrl.includes('/track/')) {
+      let trackId = inputUrl.split('/track/')[1];
+      if (trackId.includes('?')) trackId = trackId.split('?')[0];
+      return `https://open.spotify.com/embed/track/${trackId}`;
+    } else if (inputUrl.includes('embed')) {
+      return inputUrl;
+    }
+  } catch (e) { return defaultSpotify; }
+  return defaultSpotify;
+}
+
+document.getElementById('revealHeart').addEventListener('click', function() {
+  document.getElementById('musicGate').style.display = 'none';
+  document.getElementById('receiver').style.display = 'flex';
+  document.getElementById('photoOverlay').style.display = 'block';
+  document.getElementById('photoBg').style.filter = "blur(0px)";
+  createHearts();
+  
+  const items = document.querySelectorAll('.fadeItem');
+  items.forEach((item, index) => {
+    setTimeout(() => { item.classList.add('visible'); }, index * 800);
+  });
+});
+
+function createHearts() {
+  setInterval(() => {
+    const heart = document.createElement('div');
+    heart.className = 'heart-fall';
+    heart.textContent = '💗';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 7000);
+  }, 300);
+}
+</script>
+
+</body>
+</html>
