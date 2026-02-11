@@ -13,13 +13,11 @@ html,body{
   font-family:'Poppins',sans-serif;
 }
 
-/* BACKGROUND */
 #gradientBg{
   position:fixed;inset:0;
   background:linear-gradient(-45deg,#fde2ea,#fff1f5,#fce7f3);
   background-size:400% 400%;
   animation:gradient 14s ease infinite;
-  z-index:0;
 }
 @keyframes gradient{
   0%{background-position:0% 50%}
@@ -27,7 +25,6 @@ html,body{
   100%{background-position:0% 50%}
 }
 
-/* PHOTO */
 #photoBg{
   position:fixed;inset:0;
   background-size:contain;
@@ -35,34 +32,27 @@ html,body{
   background-position:center;
   opacity:.6;
   display:none;
-  z-index:1;
 }
 #photoOverlay{
   position:fixed;inset:0;
   background:rgba(255,240,246,.45);
   display:none;
-  z-index:2;
 }
 
-/* HEARTS */
 .heart{
   position:absolute;top:-40px;
   font-size:26px;opacity:.35;
   animation:fall linear infinite;
-  z-index:5;
 }
 @keyframes fall{to{transform:translateY(120vh)}}
 
-/* SCREENS */
 #sender,#receiver,#musicGate{
-  position:absolute;inset:0;z-index:10;
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
 }
-#sender,#receiver{
-  display:none;align-items:center;justify-content:center;
-}
-#sender{display:flex}
 
-/* FORM */
+#receiver,#musicGate{display:none}
+
 .form{
   background:rgba(255,255,255,.92);
   backdrop-filter:blur(18px);
@@ -71,25 +61,33 @@ html,body{
   width:380px;
   box-shadow:0 40px 80px rgba(255,105,135,.3);
 }
+
 .form h1{
   font-family:'Playfair Display',serif;
   color:#c9184a;
   text-align:center;
 }
+
 input,select,textarea,button{
   width:100%;margin-top:14px;padding:12px;
   border-radius:14px;border:1px solid #ddd;
 }
 
-/* RECEIVER TEXT */
+.actionBtn{
+  background:linear-gradient(135deg,#c9184a,#e6396f);
+  color:#fff;border:none;
+  padding:14px;border-radius:30px;
+  margin-top:14px;cursor:pointer;
+}
+
 #receiverContent{text-align:center;max-width:720px}
 .fadeItem{opacity:0}
-.fadeIn{animation:fade 1.4s forwards}
+.fadeIn{animation:fade 1.3s forwards}
 @keyframes fade{to{opacity:1}}
 
 .happy{
   font-family:'Playfair Display',serif;
-  font-size:28px;
+  font-size:30px;
   color:#d6336c;
 }
 .valentine{
@@ -105,25 +103,22 @@ input,select,textarea,button{
 .message{font-size:18px;color:#7b2d3a;margin-top:12px}
 .signature{margin-top:28px;font-size:14px;color:#b56576}
 
-/* MUSIC GATE */
 #musicGate{
   background:rgba(255,255,255,.88);
-  display:none;
-  align-items:center;
-  justify-content:center;
   flex-direction:column;
 }
 
-.actionBtn{
-  background:linear-gradient(135deg,#c9184a,#e6396f);
-  color:#fff;border:none;
-  padding:14px 26px;
-  border-radius:30px;
-  margin-top:16px;
-  cursor:pointer;
-}
-#revealHeart{font-size:46px;animation:pulse 1.6s infinite}
+#revealHeart{font-size:46px;animation:pulse 1.6s infinite;cursor:pointer}
 @keyframes pulse{50%{transform:scale(1.15)}}
+
+#shareBox{
+  margin-top:16px;
+}
+#shareBox input{
+  width:100%;
+  padding:10px;
+  font-size:12px;
+}
 </style>
 </head>
 
@@ -145,12 +140,23 @@ input,select,textarea,button{
       <option value="Every day feels a little lighter|||Knowing you’re a part of my life.|||I’m grateful for you, always.">
         Grateful Always — Every day feels a little lighter knowing you’re a part of my life.
       </option>
+      <option value="Some people don’t just enter our lives,|||They slowly become a part of our happiness.|||You’re one of them.">
+        A Part of My Happiness — Some people don’t just enter our lives, they slowly become a part of our happiness.
+      </option>
+      <option value="It’s not about the big moments,|||It’s how you make the small ones feel.|||That’s what I love about you.">
+        The Little Things — It’s not about the big moments, it’s how you make the small ones feel.
+      </option>
     </select>
 
     <input type="file" id="photoInput" accept="image/*">
     <input id="spotifyInput" placeholder="Spotify link">
 
     <button class="actionBtn" onclick="openPreview()">Preview</button>
+
+    <div id="shareBox" style="display:none">
+      <p>Copy & share this link 💗</p>
+      <input id="shareLink" readonly onclick="this.select()">
+    </div>
   </div>
 </div>
 
@@ -168,11 +174,12 @@ input,select,textarea,button{
 <!-- MUSIC -->
 <div id="musicGate">
   <iframe id="spotifyPlayer" width="360" height="152"></iframe>
+  <p>Tap after playing music ❤️</p>
   <div id="revealHeart">💗</div>
 </div>
 
 <script>
-let uploadedPhoto="", heartsStarted=false;
+let uploadedPhoto="", hearts=false;
 
 photoInput.onchange=()=>{
   const r=new FileReader();
@@ -180,33 +187,40 @@ photoInput.onchange=()=>{
   r.readAsDataURL(photoInput.files[0]);
 };
 
-function startHearts(){
-  if(heartsStarted)return;
-  heartsStarted=true;
-  setInterval(()=>{
-    const h=document.createElement("div");
-    h.className="heart";h.textContent="💗";
-    h.style.left=Math.random()*100+"vw";
-    h.style.animationDuration=(Math.random()*6+6)+"s";
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),12000);
-  },450);
+function buildLink(data){
+  return location.origin + location.pathname +
+    "?v=" + encodeURIComponent(btoa(JSON.stringify(data)));
 }
 
 function openPreview(){
+  const payload={
+    n:nameInput.value,
+    m:messageSelect.value,
+    p:uploadedPhoto,
+    s:spotifyInput.value
+  };
+
+  shareLink.value = buildLink(payload);
+  shareBox.style.display="block";
+
+  loadReceiver(payload);
+}
+
+function loadReceiver(d){
   sender.style.display="none";
   receiver.style.display="flex";
   musicGate.style.display="flex";
 
-  t3.textContent=nameInput.value;
+  t3.textContent=d.n;
   t4.innerHTML="";
-  messageSelect.value.split("|||").forEach(l=>{
-    const d=document.createElement("div");
-    d.textContent=l;
-    t4.appendChild(d);
+  d.m.split("|||").forEach(l=>{
+    const div=document.createElement("div");
+    div.textContent=l;
+    t4.appendChild(div);
   });
 
-  spotifyPlayer.src=spotifyInput.value.replace("open.spotify.com","open.spotify.com/embed");
+  spotifyPlayer.src=d.s.replace("open.spotify.com","open.spotify.com/embed");
+  uploadedPhoto=d.p;
 }
 
 revealHeart.onclick=()=>{
@@ -218,12 +232,30 @@ revealHeart.onclick=()=>{
     photoOverlay.style.display="block";
   }
 
-  startHearts();
+  if(!hearts){
+    hearts=true;
+    setInterval(()=>{
+      const h=document.createElement("div");
+      h.className="heart";h.textContent="💗";
+      h.style.left=Math.random()*100+"vw";
+      h.style.animationDuration=(Math.random()*6+6)+"s";
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(),12000);
+    },450);
+  }
 
   [t1,t2,t3,t4,t5].forEach((el,i)=>{
     setTimeout(()=>el.classList.add("fadeIn"),i*1200);
   });
 };
+
+// AUTO LOAD RECEIVER FROM LINK
+(function(){
+  const p=new URLSearchParams(location.search);
+  if(!p.has("v"))return;
+  const d=JSON.parse(atob(decodeURIComponent(p.get("v"))));
+  loadReceiver(d);
+})();
 </script>
 
 </body>
