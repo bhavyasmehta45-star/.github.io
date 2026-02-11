@@ -2,23 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Valentine Proposal</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
 
 <style>
-/* --- 1. GLOBAL RESET --- */
+/* --- BASE SETUP --- */
 html, body {
   margin: 0; padding: 0;
   height: 100%; width: 100%;
   overflow: hidden;
   font-family: 'Poppins', sans-serif;
-  background: #000;
-  -webkit-tap-highlight-color: transparent;
 }
 
-/* --- 2. BACKGROUNDS --- */
+/* --- BACKGROUNDS --- */
 #gradientBg {
   position: fixed; inset: 0;
   background: linear-gradient(-45deg, #ffc3a0, #ffafbd, #ffc3a0, #ff9a9e);
@@ -37,7 +35,8 @@ html, body {
   background-size: contain; 
   background-position: center;
   background-repeat: no-repeat;
-  opacity: 0; transition: opacity 1s ease;
+  opacity: 0; /* Hidden initially */
+  transition: opacity 1s ease;
   z-index: 1;
 }
 
@@ -48,130 +47,120 @@ html, body {
   z-index: 2;
 }
 
-/* --- 3. UI LAYOUTS --- */
+/* --- FALLING HEARTS --- */
+.heart-fall {
+  position: absolute; top: -50px;
+  font-size: 24px; opacity: 0.6;
+  animation: fall linear infinite;
+  z-index: 5;
+  color: #ff4d6d;
+}
+@keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+/* --- SCREENS --- */
 #sender, #receiver, #musicGate {
   position: absolute; inset: 0; z-index: 10;
-  width: 100%; height: 100%;
 }
 
-/* Flex Center */
-#sender, #musicGate {
+/* --- SENDER (FORM) --- */
+#sender {
   display: flex; align-items: center; justify-content: center;
   backdrop-filter: blur(5px);
 }
 
-/* --- 4. SENDER DASHBOARD --- */
 .form-box {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
-  padding: 25px;
-  /* Extra padding at bottom so content isn't hidden behind floating button */
-  padding-bottom: 100px; 
-  border-radius: 25px;
-  width: 85%; max-width: 380px; 
-  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 40px;
+  border-radius: 30px;
+  width: 90%; max-width: 400px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+  border: 1px solid rgba(255,255,255,0.5);
   text-align: center;
-  max-height: 100vh; overflow-y: auto; 
-  -webkit-overflow-scrolling: touch;
 }
 
 .form-box h1 {
   font-family: 'Playfair Display', serif;
-  color: #c9184a; margin-bottom: 15px;
-  font-size: 20px; line-height: 1.3;
+  color: #c9184a; margin-bottom: 20px;
+  font-size: 26px;
 }
 
 input, select, textarea {
   width: 100%; box-sizing: border-box;
-  padding: 12px; margin-top: 8px;
-  border: 1px solid #e0e0e0; border-radius: 12px;
-  font-family: 'Poppins', sans-serif; font-size: 14px;
-  background: #fff; outline: none;
-  font-size: 16px; /* Prevents iOS zoom */
+  padding: 14px; margin-top: 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  font-family: 'Poppins', sans-serif;
+  background: rgba(255,255,255,0.9);
+  outline: none; transition: 0.3s;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #ff4d6d;
+  box-shadow: 0 0 0 3px rgba(255, 77, 109, 0.1);
 }
 
 .input-label {
-  display: block; text-align: left;
-  margin-top: 12px; margin-bottom: -5px;
-  font-size: 12px; color: #c9184a; font-weight: 600;
+  display: block;
+  text-align: left;
+  margin-top: 15px;
+  margin-bottom: -8px;
+  font-size: 13px;
+  color: #c9184a;
+  font-weight: 500;
   padding-left: 4px;
 }
 
-.small-note {
-  font-size: 10px; color: #888; text-align: left; margin-top: 2px; padding-left: 4px;
-}
-
-#customMessageInput { display: none; height: 80px; resize: none; }
-
-/* --- FLOATING BUTTON FIX --- */
-.floating-btn-container {
-  position: fixed;
-  bottom: 30px;
-  left: 0; 
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  z-index: 9999; /* Always on top */
-  pointer-events: none; /* Let clicks pass through container */
-}
+#customMessageInput { display: none; height: 100px; resize: none; }
 
 .btn {
-  width: 85%; max-width: 350px;
-  padding: 16px;
+  width: 100%; padding: 16px; margin-top: 20px;
   border: none; border-radius: 50px;
   background: linear-gradient(135deg, #ff758c, #ff7eb3);
-  color: white; font-weight: 600; font-size: 18px;
-  cursor: pointer;
-  box-shadow: 0 10px 25px rgba(255, 77, 109, 0.5);
-  pointer-events: auto; /* Re-enable clicks for button */
-  /* Remove touch delay */
-  touch-action: manipulation;
+  color: white; font-weight: 600; font-size: 16px;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
 }
-.btn:active { transform: scale(0.95); }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(255, 117, 140, 0.4); }
 
-/* --- 5. MUSIC GATE --- */
+/* --- MUSIC GATE (SPOTIFY) --- */
 #musicGate {
-  display: none; flex-direction: column;
-  background: rgba(255, 255, 255, 0.4);
+  display: none;
+  flex-direction: column; align-items: center; justify-content: center;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
 }
 
 .music-card {
-  background: rgba(255,255,255,0.95);
-  padding: 15px; border-radius: 20px;
+  background: rgba(255,255,255,0.9);
+  padding: 20px; border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-  margin-bottom: 25px;
-  position: relative; z-index: 30;
+  margin-bottom: 30px;
 }
 
 .instruction-line {
   background: rgba(255, 255, 255, 0.95);
-  padding: 10px 25px; border-radius: 50px;
-  color: #c9184a; font-weight: 600; font-size: 14px;
+  padding: 12px 30px;
+  border-radius: 50px;
+  color: #c9184a;
+  font-weight: 500;
+  font-size: 14px;
   margin-bottom: 20px;
   box-shadow: 0 5px 15px rgba(201, 24, 74, 0.15);
-  position: relative; z-index: 30;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 #revealHeart {
-  font-size: 65px; cursor: pointer;
+  font-size: 60px; cursor: pointer;
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.6));
   animation: pulseHeart 1.5s infinite;
-  position: relative; z-index: 100;
+  transition: transform 0.3s;
 }
-@keyframes pulseHeart { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+#revealHeart:hover { transform: scale(1.2); }
+@keyframes pulseHeart { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-/* Controls */
-.controls {
-  margin-top: 30px; display: flex; gap: 10px;
-  position: relative; z-index: 100;
-}
-.control-btn {
-  padding: 10px 20px; border-radius: 30px; border: none;
-  font-size: 12px; cursor: pointer; font-weight: 600;
-}
-.back-btn { background: #fff; color: #555; }
-.share-btn { background: #c9184a; color: #fff; }
-
-/* --- 6. RECEIVER SCREEN --- */
+/* --- RECEIVER (FINAL REVEAL) --- */
 #receiver {
   display: none;
   flex-direction: column;
@@ -183,6 +172,7 @@ input, select, textarea {
 
 #receiverContent {
   width: 90%; 
+  /* CHANGED: Reduced max-width slightly to make the box smaller */
   max-width: 550px; 
   z-index: 10;
   text-shadow: 0 2px 10px rgba(0,0,0,0.3); 
@@ -193,42 +183,34 @@ input, select, textarea {
 
 .r-happy {
   font-family: 'Playfair Display', serif;
-  font-size: 1.8rem; color: #fff; letter-spacing: 2px;
+  font-size: 2rem; color: #fff;
+  letter-spacing: 2px;
 }
 .r-valentine {
   font-family: 'Great Vibes', cursive;
-  font-size: 4.5rem; color: #ffebf0;
-  margin: -5px 0 5px 0; line-height: 1.1;
+  font-size: 5rem; color: #ffebf0;
+  margin: -10px 0 10px 0;
+  line-height: 1.2;
 }
 .r-name {
   font-family: 'Playfair Display', serif;
-  font-size: 2.5rem; color: #fff;
-  font-weight: 700; text-transform: uppercase; margin-bottom: 15px;
+  font-size: 3rem; color: #fff;
+  font-weight: 700; text-transform: uppercase;
+  margin-bottom: 15px;
 }
 .r-message {
-  font-size: 1rem; color: #fff; line-height: 1.5; font-weight: 400;
-  background: rgba(0,0,0,0.25);
-  padding: 15px; border-radius: 15px;
-  backdrop-filter: blur(4px); margin-bottom: 15px;
+  font-size: 1.1rem; color: #fff;
+  line-height: 1.6; font-weight: 400;
+  background: rgba(0,0,0,0.2);
+  padding: 20px; border-radius: 15px;
+  backdrop-filter: blur(2px);
+  margin-bottom: 15px;
 }
 .r-signature {
-  font-size: 0.8rem; color: rgba(255,255,255,0.8); font-style: italic;
+  font-size: 0.9rem; color: rgba(255,255,255,0.8);
+  font-style: italic; margin-top: 10px;
 }
 
-/* --- 7. FALLING HEARTS --- */
-.heart-fall {
-  position: absolute; top: -50px;
-  font-size: 24px; opacity: 0.6;
-  animation: fall linear infinite; z-index: 5; color: #ff4d6d;
-}
-@keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
-
-/* Mobile Adjustments */
-@media (max-height: 700px) {
-  .r-valentine { font-size: 3.5rem; }
-  .r-name { font-size: 2rem; }
-  .music-card iframe { height: 80px; }
-}
 </style>
 </head>
 <body>
@@ -245,28 +227,32 @@ input, select, textarea {
     
     <select id="messageSelect" onchange="checkCustom()">
       <option value="">Choose a special curated message or write custom message</option>
-      <option value="Loving You|||Is the easiest thing I've ever done.|||You are my greatest adventure.">Loving You — My greatest adventure.</option>
-      <option value="My Safe Place|||In a chaotic world,|||You are my peace and my home.">My Safe Place — You are my peace.</option>
-      <option value="Better Together|||Life is just better with you.|||Thank you for being my partner in crime.">Better Together — Partner in crime.</option>
-      <option value="Forever Kind of Love|||I choose you today,|||And I'll choose you over and over again.">Forever Love — I choose you.</option>
-      <option value="Every day feels lighter|||Knowing you’re a part of my life.|||I’m grateful for you, always.">Grateful — Every day feels lighter.</option>
+      <option value="Loving You|||Is the easiest thing I've ever done.|||You are my greatest adventure.">
+        Loving You — Is the easiest thing I've ever done.
+      </option>
+      <option value="My Safe Place|||In a chaotic world,|||You are my peace and my home.">
+        My Safe Place — In a chaotic world, you are my peace.
+      </option>
+      <option value="Better Together|||Life is just better with you.|||Thank you for being my partner in crime.">
+        Better Together — Life is just better with you.
+      </option>
+      <option value="Forever Kind of Love|||I choose you today,|||And I'll choose you over and over again.">
+        Forever Kind of Love — I choose you today.
+      </option>
+      <option value="Every day feels lighter|||Knowing you’re a part of my life.|||I’m grateful for you, always.">
+        Grateful Always — Every day feels a little lighter.
+      </option>
       <option value="custom">✨ Write my own message...</option>
     </select>
+
     <textarea id="customMessageInput" placeholder="Type your heartfelt message here... (Use '|||' to create new lines)"></textarea>
 
-    <div class="input-label">Option A: Upload Photo (For your Reel/Preview)</div>
+    <div class="input-label">Select a beautiful picture (Optional)</div>
     <input type="file" id="photoInput" accept="image/*">
-    
-    <div class="input-label">Option B: Paste Image Link (For Sharing)</div>
-    <div class="small-note">Paste a link to an image (URL) if you want to send this to a partner.</div>
-    <input id="photoUrlInput" placeholder="https://example.com/photo.jpg">
 
-    <div class="input-label">Spotify Song</div>
     <input id="spotifyInput" placeholder="Spotify Song Link (Optional)">
-  </div>
-
-  <div class="floating-btn-container">
-    <button type="button" class="btn" onclick="startPreviewMode()">Preview & Create</button>
+    
+    <button class="btn" onclick="openPreview()">Create Valentine</button>
   </div>
 </div>
 
@@ -275,13 +261,11 @@ input, select, textarea {
     <iframe id="spotifyPlayer" style="border-radius:12px" width="300" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
   </div>
   
-  <div class="instruction-line">Tap heart below after playing Music</div>
-  <div id="revealHeart">💖</div>
-
-  <div id="senderControls" class="controls" style="display:none;">
-    <button class="control-btn back-btn" onclick="goBackToEdit()">Back to Edit</button>
-    <button class="control-btn share-btn" onclick="copyLink()">🔗 Copy Link for Partner</button>
+  <div class="instruction-line">
+    Tap heart below after playing Music
   </div>
+  
+  <div id="revealHeart">💖</div>
 </div>
 
 <div id="receiver">
@@ -295,170 +279,120 @@ input, select, textarea {
 </div>
 
 <script>
-/* --- DATA & DEFAULTS --- */
-let uploadedPhotoData = ""; 
+let uploadedPhoto = "";
+
+/* --- CONFIGURATION --- */
+// Default song: Dooron Dooron
 const defaultSpotify = "https://open.spotify.com/"; 
+/* --------------------- */
 
-/* --- INITIALIZATION --- */
-window.addEventListener('DOMContentLoaded', (event) => {
-  const params = new URLSearchParams(window.location.search);
-  if (params.has('n')) {
-    startReceiverMode(params);
-  }
-
-  // Setup File Input
-  const photoInput = document.getElementById('photoInput');
-  if(photoInput) {
-    photoInput.addEventListener('change', function(e) {
-      if (e.target.files && e.target.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          uploadedPhotoData = event.target.result;
-          document.getElementById('photoUrlInput').value = ""; 
-        };
-        reader.readAsDataURL(e.target.files[0]);
-      }
-    });
-  }
+// Handle Photo Upload
+document.getElementById('photoInput').addEventListener('change', function(e) {
+  const reader = new FileReader();
+  reader.onload = function(event) {
+    uploadedPhoto = event.target.result;
+  };
+  reader.readAsDataURL(e.target.files[0]);
 });
 
-/* --- SENDER FUNCTIONS --- */
+// Toggle Custom Message Box
 function checkCustom() {
   const select = document.getElementById('messageSelect');
   const customBox = document.getElementById('customMessageInput');
-  customBox.style.display = (select.value === 'custom') ? 'block' : 'none';
+  if (select.value === 'custom') {
+    customBox.style.display = 'block';
+  } else {
+    customBox.style.display = 'none';
+  }
 }
 
-function startPreviewMode() {
+// Fixed Spotify Link Parser
+function getSpotifyEmbedUrl(inputUrl) {
+  if (!inputUrl) return defaultSpotify;
+  
   try {
-    const name = document.getElementById('nameInput').value;
-    if(!name) { 
-      alert("Please enter your partner's name first!"); 
-      return; 
+    // 1. Handle standard standard share links: https://open.spotify.com/track/ID
+    if (inputUrl.includes('/track/')) {
+      const parts = inputUrl.split('/track/');
+      let trackId = parts[1];
+      // Remove any query parameters (like ?si=...)
+      if (trackId.includes('?')) {
+        trackId = trackId.split('?')[0];
+      }
+      return `https://open.spotify.com/embed/track/${trackId}`;
     }
-
-    setupReceiverView(
-      name, 
-      document.getElementById('messageSelect').value, 
-      document.getElementById('customMessageInput').value
-    );
-    
-    const spotifyLink = document.getElementById('spotifyInput').value;
-    document.getElementById('spotifyPlayer').src = getSpotifyEmbedUrl(spotifyLink);
-
-    const urlPhoto = document.getElementById('photoUrlInput').value;
-    let bgImage = "";
-    if(uploadedPhotoData) bgImage = `url(${uploadedPhotoData})`;
-    else if(urlPhoto) bgImage = `url(${urlPhoto})`;
-
-    if(bgImage) {
-      const bg = document.getElementById('photoBg');
-      bg.style.backgroundImage = bgImage;
-      bg.style.opacity = '1';
-      bg.style.filter = "blur(8px)";
+    // 2. Handle already embedded links
+    else if (inputUrl.includes('embed')) {
+      return inputUrl;
     }
-
-    document.getElementById('sender').style.display = 'none';
-    document.getElementById('musicGate').style.display = 'flex';
-    document.getElementById('senderControls').style.display = 'flex'; 
-    
-  } catch (err) {
-    alert("Error: " + err.message);
+  } catch (e) {
+    return defaultSpotify;
   }
+  return defaultSpotify;
 }
 
-function goBackToEdit() {
-  document.getElementById('sender').style.display = 'flex';
-  document.getElementById('musicGate').style.display = 'none';
-  document.getElementById('photoBg').style.opacity = '0';
-}
+// Open the Music Gate
+function openPreview() {
+  const name = document.getElementById('nameInput').value;
+  const selectVal = document.getElementById('messageSelect').value;
+  const customVal = document.getElementById('customMessageInput').value;
+  const spotifyLink = document.getElementById('spotifyInput').value;
 
-function copyLink() {
-  const name = encodeURIComponent(document.getElementById('nameInput').value);
-  const msgSelect = encodeURIComponent(document.getElementById('messageSelect').value);
-  const msgCustom = encodeURIComponent(document.getElementById('customMessageInput').value);
-  const song = encodeURIComponent(document.getElementById('spotifyInput').value);
-  const photoUrl = encodeURIComponent(document.getElementById('photoUrlInput').value);
+  if(!name) { alert("Please enter a name!"); return; }
 
-  if(uploadedPhotoData && !document.getElementById('photoUrlInput').value) {
-    alert("Note: Uploaded photos work for your preview, but to share a link, please use the 'Paste Image Link' box.");
-    return;
-  }
-
-  const baseUrl = window.location.href.split('?')[0];
-  const finalLink = `${baseUrl}?n=${name}&m=${msgSelect}&c=${msgCustom}&s=${song}&p=${photoUrl}`;
-  
-  navigator.clipboard.writeText(finalLink).then(() => {
-    alert("Link Copied! Send this to your Valentine ❤️");
-  }).catch(err => {
-    prompt("Copy this link:", finalLink);
-  });
-}
-
-/* --- RECEIVER FUNCTIONS --- */
-function startReceiverMode(params) {
-  document.getElementById('sender').style.display = 'none';
-  
-  const name = params.get('n');
-  const msgSelect = params.get('m');
-  const msgCustom = params.get('c');
-  const song = params.get('s');
-  const photo = params.get('p');
-
-  setupReceiverView(name, msgSelect, msgCustom);
-  document.getElementById('spotifyPlayer').src = getSpotifyEmbedUrl(song);
-
-  if (photo && photo !== "undefined" && photo !== "") {
-    const bg = document.getElementById('photoBg');
-    bg.style.backgroundImage = `url(${photo})`;
-    bg.style.opacity = '1';
-    bg.style.filter = "blur(8px)";
-  }
-
-  document.getElementById('musicGate').style.display = 'flex';
-  document.getElementById('senderControls').style.display = 'none';
-}
-
-/* --- SHARED UTILS --- */
-function setupReceiverView(name, msgSelect, msgCustom) {
+  // Set Content
   document.getElementById('rName').textContent = name;
-  const finalMessage = (msgSelect === 'custom' ? msgCustom : msgSelect);
+  
+  // Process Message
+  const finalMessage = (selectVal === 'custom' ? customVal : selectVal);
   const msgContainer = document.getElementById('rMessage');
-  msgContainer.innerHTML = "";
+  msgContainer.innerHTML = ""; 
+  
   if(finalMessage) {
     finalMessage.split('|||').forEach(line => {
-      const p = document.createElement('div');
+      const p = document.createElement('p');
       p.textContent = line;
       p.style.margin = "5px 0";
       msgContainer.appendChild(p);
     });
   }
+
+  // Set Spotify
+  document.getElementById('spotifyPlayer').src = getSpotifyEmbedUrl(spotifyLink);
+
+  // Transition
+  document.getElementById('sender').style.display = 'none';
+  document.getElementById('musicGate').style.display = 'flex'; 
+  
+  // If photo is uploaded, show it immediately on Music Gate
+  if (uploadedPhoto) {
+    const bg = document.getElementById('photoBg');
+    bg.style.backgroundImage = `url(${uploadedPhoto})`;
+    bg.style.opacity = '1';
+    bg.style.filter = "blur(8px)"; 
+  }
 }
 
-function getSpotifyEmbedUrl(inputUrl) {
-  if (!inputUrl || inputUrl === "undefined") return defaultSpotify;
-  try {
-    if (inputUrl.includes('/track/')) {
-      let trackId = inputUrl.split('/track/')[1];
-      if (trackId.includes('?')) trackId = trackId.split('?')[0];
-      return `https://open.spotify.com/embed/track/${trackId}`;
-    } else if (inputUrl.includes('embed')) {
-      return inputUrl;
-    }
-  } catch (e) { return defaultSpotify; }
-  return defaultSpotify;
-}
-
+// Final Reveal
 document.getElementById('revealHeart').addEventListener('click', function() {
   document.getElementById('musicGate').style.display = 'none';
   document.getElementById('receiver').style.display = 'flex';
   document.getElementById('photoOverlay').style.display = 'block';
-  document.getElementById('photoBg').style.filter = "blur(0px)";
-  createHearts();
   
+  // Unblur photo
+  if(uploadedPhoto) {
+    document.getElementById('photoBg').style.filter = "blur(0px)";
+  }
+
+  // Start Hearts
+  createHearts();
+
+  // Animation Sequence
   const items = document.querySelectorAll('.fadeItem');
   items.forEach((item, index) => {
-    setTimeout(() => { item.classList.add('visible'); }, index * 800);
+    setTimeout(() => {
+      item.classList.add('visible');
+    }, index * 1000); 
   });
 });
 
@@ -468,7 +402,7 @@ function createHearts() {
     heart.className = 'heart-fall';
     heart.textContent = '💗';
     heart.style.left = Math.random() * 100 + 'vw';
-    heart.style.animationDuration = Math.random() * 3 + 4 + 's';
+    heart.style.animationDuration = Math.random() * 3 + 4 + 's'; 
     document.body.appendChild(heart);
     setTimeout(() => heart.remove(), 7000);
   }, 300);
