@@ -43,7 +43,7 @@ html, body {
 
 #photoOverlay {
   position: fixed; inset: 0;
-  /* Gradient starts dark only at the bottom 40% to keep top clear */
+  /* Top 60% clear, bottom 40% dark gradient for text readability */
   background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 85%, rgba(0,0,0,0.95) 100%);
   display: none;
   z-index: 2;
@@ -92,7 +92,7 @@ input, select, textarea {
 
 .input-label {
   display: block; text-align: left;
-  margin-top: 12px; margin-bottom: -5px;
+  margin-top: 15px; margin-bottom: -5px;
   font-size: 12px; color: #c9184a; font-weight: 600;
   padding-left: 4px;
 }
@@ -150,32 +150,21 @@ input, select, textarea {
 }
 @keyframes pulseHeart { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
 
-.controls {
-  margin-top: 30px; display: flex; gap: 10px;
-  position: relative; z-index: 100;
-}
-.control-btn {
-  padding: 10px 20px; border-radius: 30px; border: none;
-  font-size: 12px; cursor: pointer; font-weight: 600;
-}
-.back-btn { background: #fff; color: #555; }
-.share-btn { background: #c9184a; color: #fff; }
-
-/* --- 6. RECEIVER SCREEN (UPDATED for Bottom Alignment) --- */
+/* --- 6. RECEIVER SCREEN --- */
 #receiver {
   display: none;
   flex-direction: column;
-  /* KEY CHANGE: Flex-end pushes everything to the bottom */
+  /* Flex-end pushes content to bottom */
   justify-content: flex-end; 
   align-items: center;
   text-align: center;
-  padding-bottom: 40px; 
+  padding-bottom: 30px; 
   width: 100%;
 }
 
 #receiverHeader {
   z-index: 10; width: 100%;
-  margin-bottom: 10px; /* Tight gap between Name and Message Box */
+  margin-bottom: 10px;
 }
 
 #receiverContent {
@@ -213,16 +202,33 @@ input, select, textarea {
 
 .r-message {
   font-size: 0.95rem; color: #fff; line-height: 1.5; font-weight: 400;
-  margin-bottom: 15px; /* Space before signature */
+  margin-bottom: 15px;
 }
 .r-signature {
   font-size: 0.75rem; color: rgba(255,255,255,0.8); font-style: italic;
-  border-top: 1px solid rgba(255,255,255,0.2); /* Optional divider */
+  border-top: 1px solid rgba(255,255,255,0.2);
   padding-top: 8px;
   display: block;
 }
 
-/* --- 7. FALLING HEARTS --- */
+/* --- 7. FINAL CONTROLS (Buttons on Last Page) --- */
+.final-controls {
+  margin-top: 15px; 
+  display: none; /* Hidden by default, shown via JS only for Sender */
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
+  z-index: 100;
+}
+.control-btn {
+  padding: 10px 20px; border-radius: 30px; border: none;
+  font-size: 12px; cursor: pointer; font-weight: 600;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.back-btn { background: rgba(255,255,255,0.9); color: #555; }
+.share-btn { background: #c9184a; color: #fff; }
+
+/* --- 8. FALLING HEARTS --- */
 .heart-fall {
   position: absolute; top: -50px;
   font-size: 24px; opacity: 0.6;
@@ -259,12 +265,9 @@ input, select, textarea {
     </select>
     <textarea id="customMessageInput" placeholder="Type your heartfelt message here... (Use '|||' to create new lines)"></textarea>
 
-    <div class="input-label">Option A: Upload Photo (For your Reel/Preview)</div>
-    <input type="file" id="photoInput" accept="image/*">
-    
-    <div class="input-label">Option B: Paste Image Link (For Sharing)</div>
-    <div class="small-note">Paste a link to an image (URL) if you want to send this to a partner.</div>
-    <input id="photoUrlInput" placeholder="https://example.com/photo.jpg">
+    <div class="input-label">Upload Photo Link from Google Drive</div>
+    <div class="small-note">Paste the shareable link of your photo here.</div>
+    <input id="photoUrlInput" placeholder="https://drive.google.com/file/d/...">
 
     <div class="input-label">Spotify Song</div>
     <input id="spotifyInput" placeholder="Spotify Song Link (Optional)">
@@ -282,11 +285,6 @@ input, select, textarea {
   
   <div class="instruction-line">Tap heart below after playing Music</div>
   <div id="revealHeart">💖</div>
-
-  <div id="senderControls" class="controls" style="display:none;">
-    <button class="control-btn back-btn" onclick="goBackToEdit()">Back to Edit</button>
-    <button class="control-btn share-btn" onclick="copyLink()">🔗 Copy Link for Partner</button>
-  </div>
 </div>
 
 <div id="receiver">
@@ -302,30 +300,25 @@ input, select, textarea {
       <div class="r-signature">From someone who is smiling while you read this.</div>
     </div>
   </div>
+
+  <div id="finalControls" class="final-controls fadeItem">
+    <button class="control-btn back-btn" onclick="goBackToEdit()">Back to Edit</button>
+    <button class="control-btn share-btn" onclick="copyLink()">🔗 Copy Link</button>
+  </div>
 </div>
 
 <script>
-let uploadedPhotoData = ""; 
+let isPreview = false; /* Flag to track if user is sender or receiver */
 const defaultSpotify = "https://open.spotify.com/"; 
 
 window.addEventListener('DOMContentLoaded', (event) => {
   const params = new URLSearchParams(window.location.search);
   if (params.has('n')) {
+    /* If URL has params, it's the receiver (partner) viewing it */
     startReceiverMode(params);
-  }
-
-  const photoInput = document.getElementById('photoInput');
-  if(photoInput) {
-    photoInput.addEventListener('change', function(e) {
-      if (e.target.files && e.target.files[0]) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          uploadedPhotoData = event.target.result;
-          document.getElementById('photoUrlInput').value = ""; 
-        };
-        reader.readAsDataURL(e.target.files[0]);
-      }
-    });
+  } else {
+    /* Otherwise it's the sender */
+    isPreview = false;
   }
 });
 
@@ -343,6 +336,9 @@ function startPreviewMode() {
       return; 
     }
 
+    /* Set flag to true so we show buttons later */
+    isPreview = true;
+
     setupReceiverView(
       name, 
       document.getElementById('messageSelect').value, 
@@ -355,20 +351,15 @@ function startPreviewMode() {
     let rawUrlPhoto = document.getElementById('photoUrlInput').value;
     const urlPhoto = convertGoogleDriveLink(rawUrlPhoto);
 
-    let bgImage = "";
-    if(uploadedPhotoData) bgImage = `url(${uploadedPhotoData})`;
-    else if(urlPhoto) bgImage = `url(${urlPhoto})`;
-
-    if(bgImage) {
+    if(urlPhoto) {
       const bg = document.getElementById('photoBg');
-      bg.style.backgroundImage = bgImage;
+      bg.style.backgroundImage = `url(${urlPhoto})`;
       bg.style.opacity = '1';
       bg.style.filter = "blur(8px)";
     }
 
     document.getElementById('sender').style.display = 'none';
     document.getElementById('musicGate').style.display = 'flex';
-    document.getElementById('senderControls').style.display = 'flex'; 
     
   } catch (err) {
     alert("Error: " + err.message);
@@ -378,7 +369,13 @@ function startPreviewMode() {
 function goBackToEdit() {
   document.getElementById('sender').style.display = 'flex';
   document.getElementById('musicGate').style.display = 'none';
+  document.getElementById('receiver').style.display = 'none';
+  document.getElementById('photoOverlay').style.display = 'none';
   document.getElementById('photoBg').style.opacity = '0';
+  
+  /* Stop heart animation loop if you want, but simple reload is easier or just hiding them */
+  const hearts = document.querySelectorAll('.heart-fall');
+  hearts.forEach(h => h.remove());
 }
 
 function copyLink() {
@@ -390,11 +387,6 @@ function copyLink() {
   let rawUrl = document.getElementById('photoUrlInput').value;
   const convertedUrl = convertGoogleDriveLink(rawUrl);
   const photoUrl = encodeURIComponent(convertedUrl);
-
-  if(uploadedPhotoData && !document.getElementById('photoUrlInput').value) {
-    alert("Note: Uploaded photos work for your preview, but to share a link, please use the 'Paste Image Link' box.");
-    return;
-  }
 
   const baseUrl = window.location.href.split('?')[0];
   const finalLink = `${baseUrl}?n=${name}&m=${msgSelect}&c=${msgCustom}&s=${song}&p=${photoUrl}`;
@@ -408,6 +400,7 @@ function copyLink() {
 
 function startReceiverMode(params) {
   document.getElementById('sender').style.display = 'none';
+  isPreview = false; /* Ensure buttons don't show for receiver */
   
   const name = params.get('n');
   const msgSelect = params.get('m');
@@ -426,7 +419,6 @@ function startReceiverMode(params) {
   }
 
   document.getElementById('musicGate').style.display = 'flex';
-  document.getElementById('senderControls').style.display = 'none';
 }
 
 function setupReceiverView(name, msgSelect, msgCustom) {
@@ -475,6 +467,11 @@ document.getElementById('revealHeart').addEventListener('click', function() {
   document.getElementById('photoOverlay').style.display = 'block';
   document.getElementById('photoBg').style.filter = "blur(0px)";
   createHearts();
+  
+  /* Show buttons ONLY if we are in preview mode (Sender) */
+  if (isPreview) {
+    document.getElementById('finalControls').style.display = 'flex';
+  }
   
   const items = document.querySelectorAll('.fadeItem');
   items.forEach((item, index) => {
