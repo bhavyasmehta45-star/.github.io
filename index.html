@@ -50,7 +50,6 @@ html,body{
   position:absolute;inset:0;
   display:flex;align-items:center;justify-content:center;
 }
-
 #receiver,#musicGate{display:none}
 
 .form{
@@ -87,7 +86,7 @@ input,select,textarea,button{
 
 .happy{
   font-family:'Playfair Display',serif;
-  font-size:30px;
+  font-size:32px;
   color:#d6336c;
 }
 .valentine{
@@ -108,7 +107,11 @@ input,select,textarea,button{
   flex-direction:column;
 }
 
-#revealHeart{font-size:46px;animation:pulse 1.6s infinite;cursor:pointer}
+#revealHeart{
+  font-size:46px;
+  animation:pulse 1.6s infinite;
+  cursor:pointer;
+}
 @keyframes pulse{50%{transform:scale(1.15)}}
 
 #shareBox{
@@ -167,7 +170,9 @@ input,select,textarea,button{
     <div class="fadeItem valentine" id="t2">Valentine’s Day</div>
     <div class="fadeItem name" id="t3"></div>
     <div class="fadeItem message" id="t4"></div>
-    <div class="fadeItem signature" id="t5">From someone smiling while you read this.</div>
+    <div class="fadeItem signature" id="t5">
+      From someone smiling while you read this.
+    </div>
   </div>
 </div>
 
@@ -187,9 +192,16 @@ photoInput.onchange=()=>{
   r.readAsDataURL(photoInput.files[0]);
 };
 
+// ✅ SAFE BASE64 ENCODING
+function encodeData(obj){
+  return btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+}
+function decodeData(str){
+  return JSON.parse(decodeURIComponent(escape(atob(str))));
+}
+
 function buildLink(data){
-  return location.origin + location.pathname +
-    "?v=" + encodeURIComponent(btoa(JSON.stringify(data)));
+  return location.origin + location.pathname + "?v=" + encodeData(data);
 }
 
 function openPreview(){
@@ -202,7 +214,6 @@ function openPreview(){
 
   shareLink.value = buildLink(payload);
   shareBox.style.display="block";
-
   loadReceiver(payload);
 }
 
@@ -253,7 +264,7 @@ revealHeart.onclick=()=>{
 (function(){
   const p=new URLSearchParams(location.search);
   if(!p.has("v"))return;
-  const d=JSON.parse(atob(decodeURIComponent(p.get("v"))));
+  const d=decodeData(p.get("v"));
   loadReceiver(d);
 })();
 </script>
