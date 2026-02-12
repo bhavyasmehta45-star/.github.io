@@ -43,8 +43,8 @@ html, body {
 
 #photoOverlay {
   position: fixed; inset: 0;
-  /* Subtle gradient to help text pop without ruining the photo */
-  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.7) 90%, rgba(0,0,0,0.9) 100%);
+  /* Darker gradient at bottom to make text readable */
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.1) 60%, rgba(0,0,0,0.7) 85%, rgba(0,0,0,0.95) 100%);
   display: none;
   z-index: 2;
 }
@@ -148,8 +148,8 @@ input::placeholder { color: #888; }
   justify-content: flex-end; 
   align-items: center;
   text-align: center;
-  /* INCREASED PADDING to prevent watermark overlap on mobile */
-  padding-bottom: 100px; 
+  /* SAFE ZONE: Increased padding prevents watermark overlap on mobile */
+  padding-bottom: 130px; 
   width: 100%;
 }
 
@@ -264,9 +264,10 @@ input::placeholder { color: #888; }
 /* --- 9. WATERMARK (Bottom Right - Mobile Safe) --- */
 .watermark {
   position: fixed; 
-  bottom: 25px; /* Lifted up for mobile home bars */
-  right: 20px; /* Inset for rounded corners */
-  font-size: 10px; color: rgba(255,255,255,0.5);
+  bottom: 20px; 
+  right: 15px; 
+  font-size: 9px; 
+  color: rgba(255,255,255,0.5);
   text-shadow: 0 1px 2px rgba(0,0,0,0.8);
   z-index: 1000; pointer-events: none;
   font-family: sans-serif; letter-spacing: 1px; text-transform: uppercase;
@@ -296,7 +297,7 @@ input::placeholder { color: #888; }
 
 <div id="sharePopup">
   <div class="sp-title">Loved this? 📸</div>
-  <div class="sp-text">Capture this moment, share it on your story, and tag us!</div>
+  <div class="sp-text">Tag your valentine and don't forget to mention us!</div>
   
   <div class="sp-handle-box">
     <span class="sp-handle">@ai_bhavyamehta</span>
@@ -529,7 +530,7 @@ document.getElementById('revealHeart').addEventListener('click', function() {
     setTimeout(() => { item.classList.add('visible'); }, index * 800);
   });
 
-  // --- TRIGGER POPUP AFTER 8 SECONDS (Adjusted Time) ---
+  // --- TRIGGER POPUP AFTER 8 SECONDS ---
   setTimeout(() => {
     document.getElementById('sharePopup').classList.add('popup-visible');
   }, 8000);
