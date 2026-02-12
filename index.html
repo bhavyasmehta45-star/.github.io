@@ -148,7 +148,7 @@ input::placeholder { color: #888; }
   justify-content: flex-end; 
   align-items: center;
   text-align: center;
-  /* THE FIX: Huge padding forces all text & buttons UP, away from watermark */
+  /* Huge padding to force content up away from watermark */
   padding-bottom: 160px; 
   width: 100%;
 }
@@ -365,7 +365,10 @@ input::placeholder { color: #888; }
 
 <script>
 let isPreview = false; 
-const defaultSpotify = "https://open.spotify.com/"; 
+
+// --- SETUP DEFAULT SONG HERE ---
+// "Dooron Dooron" Spotify Link (User Provided)
+const defaultSpotify = "https://open.spotify.com/track/0q5e5KtUOhYQujmhLP0pKd?si=f1b203be2c98485d"; 
 
 window.addEventListener('DOMContentLoaded', (event) => {
   const params = new URLSearchParams(window.location.search);
@@ -398,7 +401,9 @@ function startPreviewMode() {
       document.getElementById('customMessageInput').value
     );
     
-    const spotifyLink = document.getElementById('spotifyInput').value;
+    let spotifyLink = document.getElementById('spotifyInput').value;
+    if(!spotifyLink) spotifyLink = defaultSpotify; // Use default if empty
+
     document.getElementById('spotifyPlayer').src = getSpotifyEmbedUrl(spotifyLink);
 
     let rawUrlPhoto = document.getElementById('photoUrlInput').value;
@@ -458,10 +463,12 @@ function startReceiverMode(params) {
   const name = params.get('n');
   const msgSelect = params.get('m');
   const msgCustom = params.get('c');
-  const song = params.get('s');
+  let song = params.get('s');
   const photo = params.get('p');
 
   setupReceiverView(name, msgSelect, msgCustom);
+  
+  if(!song || song === "undefined" || song === "") song = defaultSpotify; // Use default if empty
   document.getElementById('spotifyPlayer').src = getSpotifyEmbedUrl(song);
 
   if (photo && photo !== "undefined" && photo !== "") {
@@ -501,17 +508,21 @@ function convertGoogleDriveLink(url) {
 }
 
 function getSpotifyEmbedUrl(inputUrl) {
-  if (!inputUrl || inputUrl === "undefined") return defaultSpotify;
+  if (!inputUrl || inputUrl === "undefined" || inputUrl === "") return "";
+  
   try {
+    // 1. If it's a full Spotify URL
     if (inputUrl.includes('/track/')) {
       let trackId = inputUrl.split('/track/')[1];
       if (trackId.includes('?')) trackId = trackId.split('?')[0];
       return `https://open.spotify.com/embed/track/${trackId}`;
-    } else if (inputUrl.includes('embed')) {
+    } 
+    // 2. If it's already an embed URL
+    else if (inputUrl.includes('embed')) {
       return inputUrl;
     }
-  } catch (e) { return defaultSpotify; }
-  return defaultSpotify;
+  } catch (e) { return inputUrl; }
+  return inputUrl;
 }
 
 document.getElementById('revealHeart').addEventListener('click', function() {
@@ -530,10 +541,10 @@ document.getElementById('revealHeart').addEventListener('click', function() {
     setTimeout(() => { item.classList.add('visible'); }, index * 800);
   });
 
-  // --- TRIGGER POPUP AFTER 8 SECONDS ---
+  // --- TRIGGER POPUP AFTER 10 SECONDS (Added 2 seconds more) ---
   setTimeout(() => {
     document.getElementById('sharePopup').classList.add('popup-visible');
-  }, 8000);
+  }, 10000);
 });
 
 function createHearts() {
