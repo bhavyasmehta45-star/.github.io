@@ -43,8 +43,8 @@ html, body {
 
 #photoOverlay {
   position: fixed; inset: 0;
-  /* Top 60% clear, bottom 40% dark gradient for text readability */
-  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 60%, rgba(0,0,0,0.8) 85%, rgba(0,0,0,0.95) 100%);
+  /* Top 50% clear, bottom 50% gradient - Improves text readability on full photos */
+  background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.8) 85%, rgba(0,0,0,0.95) 100%);
   display: none;
   z-index: 2;
 }
@@ -64,7 +64,7 @@ html, body {
 .form-box {
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(20px);
-  padding: 30px 25px; /* Slightly more vertical padding */
+  padding: 30px 25px;
   border-radius: 25px;
   width: 85%; max-width: 380px; 
   box-shadow: 0 20px 50px rgba(0,0,0,0.2);
@@ -83,7 +83,7 @@ html, body {
 input, select, textarea {
   width: 100%; box-sizing: border-box;
   padding: 15px; 
-  margin-top: 15px; /* Increased margin for better separation between boxes */
+  margin-top: 15px;
   border: 1px solid #e0e0e0; border-radius: 12px;
   font-family: 'Poppins', sans-serif; font-size: 14px;
   background: #fff; outline: none;
@@ -148,7 +148,7 @@ input::placeholder { color: #888; }
   justify-content: flex-end; 
   align-items: center;
   text-align: center;
-  padding-bottom: 30px; 
+  padding-bottom: 40px; 
   width: 100%;
 }
 
@@ -165,37 +165,43 @@ input::placeholder { color: #888; }
 .fadeItem { opacity: 0; transform: translateY(20px); transition: all 1s ease; }
 .visible { opacity: 1; transform: translateY(0); }
 
+/* PREMIUM TEXT STYLES (Readability Fix) */
 .r-happy {
   font-family: 'Playfair Display', serif;
   font-size: 1.1rem; 
   color: #fff; letter-spacing: 2px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8); margin-bottom: 0px;
+  margin-bottom: 0px;
+  /* Double shadow: Sharp edge + Soft Glow */
+  text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.5);
 }
 .r-valentine {
   font-family: 'Great Vibes', cursive;
   font-size: 3rem; color: #ffebf0; line-height: 1.1;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 15px rgba(255, 77, 109, 0.3);
 }
 .r-name {
   font-family: 'Playfair Display', serif;
   font-size: 1.8rem; color: #fff;
   font-weight: 700; text-transform: uppercase; margin-top: 5px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.5);
 }
 
 .r-message-box {
-  background: rgba(0, 0, 0, 0.4); 
+  /* Darker background for better contrast against white photos */
+  background: rgba(0, 0, 0, 0.55); 
   padding: 20px; border-radius: 20px;
-  backdrop-filter: blur(5px); 
-  border: 1px solid rgba(255,255,255,0.1);
+  backdrop-filter: blur(8px); 
+  border: 1px solid rgba(255,255,255,0.15);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
 .r-message {
   font-size: 0.95rem; color: #fff; line-height: 1.5; font-weight: 400;
   margin-bottom: 15px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
 }
 .r-signature {
-  font-size: 0.75rem; color: rgba(255,255,255,0.8); font-style: italic;
+  font-size: 0.75rem; color: rgba(255,255,255,0.85); font-style: italic;
   border-top: 1px solid rgba(255,255,255,0.2);
   padding-top: 8px;
   display: block;
@@ -205,11 +211,17 @@ input::placeholder { color: #888; }
 .final-controls {
   margin-top: 15px; 
   display: none; 
-  gap: 10px;
-  justify-content: center;
+  flex-direction: column; /* Stacked for better mobile layout */
+  align-items: center;
+  gap: 12px;
   width: 100%;
   z-index: 100;
 }
+
+.button-row {
+  display: flex; gap: 10px; justify-content: center;
+}
+
 .control-btn {
   padding: 10px 20px; border-radius: 30px; border: none;
   font-size: 12px; cursor: pointer; font-weight: 600;
@@ -217,6 +229,25 @@ input::placeholder { color: #888; }
 }
 .back-btn { background: rgba(255,255,255,0.9); color: #555; }
 .share-btn { background: #c9184a; color: #fff; }
+
+/* Share Hint Text */
+.share-hint {
+  font-size: 11px; color: rgba(255,255,255,0.9);
+  text-shadow: 0 1px 2px rgba(0,0,0,1);
+  margin-top: 5px;
+  letter-spacing: 0.5px;
+}
+.share-hint a { color: #ff99ac; text-decoration: none; font-weight: 600; }
+
+/* Watermark */
+.watermark {
+  position: fixed; bottom: 8px; left: 0; width: 100%;
+  text-align: center;
+  font-size: 10px; color: rgba(255,255,255,0.4);
+  font-family: sans-serif;
+  z-index: 1000; pointer-events: none;
+  text-transform: uppercase; letter-spacing: 1px;
+}
 
 /* --- 8. FALLING HEARTS --- */
 .heart-fall {
@@ -237,6 +268,8 @@ input::placeholder { color: #888; }
 <div id="gradientBg"></div>
 <div id="photoBg"></div>
 <div id="photoOverlay"></div>
+
+<div class="watermark">By - BM AI Solutions</div>
 
 <div id="sender">
   <div class="form-box">
@@ -289,8 +322,13 @@ input::placeholder { color: #888; }
   </div>
 
   <div id="finalControls" class="final-controls fadeItem">
-    <button class="control-btn back-btn" onclick="goBackToEdit()">Back to Edit</button>
-    <button class="control-btn share-btn" onclick="copyLink()">🔗 Copy Link</button>
+    <div class="button-row">
+      <button class="control-btn back-btn" onclick="goBackToEdit()">Back to Edit</button>
+      <button class="control-btn share-btn" onclick="copyLink()">🔗 Copy Link</button>
+    </div>
+    <div class="share-hint">
+        Loved this? Screenshot & tag <a href="https://instagram.com/bhavyamehta____" target="_blank">@bhavyamehta____</a>
+    </div>
   </div>
 </div>
 
