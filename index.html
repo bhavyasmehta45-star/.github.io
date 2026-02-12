@@ -148,8 +148,8 @@ input::placeholder { color: #888; }
   justify-content: flex-end; 
   align-items: center;
   text-align: center;
-  /* SAFE ZONE: Increased padding prevents watermark overlap on mobile */
-  padding-bottom: 130px; 
+  /* THE FIX: Huge padding forces all text & buttons UP, away from watermark */
+  padding-bottom: 160px; 
   width: 100%;
 }
 
@@ -172,7 +172,6 @@ input::placeholder { color: #888; }
   font-size: 1.1rem; 
   color: #fff; letter-spacing: 2px;
   margin-bottom: 0px;
-  /* Layer 1: Sharp black outline. Layer 2: Soft dark blur */
   text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.6);
 }
 .r-valentine {
@@ -188,7 +187,6 @@ input::placeholder { color: #888; }
 }
 
 .r-message-box {
-  /* Semi-transparent dark glass for contrast */
   background: rgba(0, 0, 0, 0.5); 
   padding: 20px; border-radius: 20px;
   backdrop-filter: blur(8px); 
@@ -261,11 +259,11 @@ input::placeholder { color: #888; }
   color: #888; font-size: 12px; text-decoration: underline; cursor: pointer;
 }
 
-/* --- 9. WATERMARK (Bottom Right - Mobile Safe) --- */
+/* --- 9. WATERMARK (Safe Placement) --- */
 .watermark {
   position: fixed; 
-  bottom: 20px; 
-  right: 15px; 
+  bottom: 10px; /* Closer to edge */
+  right: 10px;  /* Closer to edge */
   font-size: 9px; 
   color: rgba(255,255,255,0.5);
   text-shadow: 0 1px 2px rgba(0,0,0,0.8);
@@ -284,6 +282,8 @@ input::placeholder { color: #888; }
 @media (max-height: 700px) {
   .r-valentine { font-size: 2.5rem; }
   .r-name { font-size: 1.4rem; }
+  /* Extra safety for small phones */
+  .watermark { font-size: 8px; bottom: 5px; right: 5px; }
 }
 </style>
 </head>
